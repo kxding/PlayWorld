@@ -16,6 +16,12 @@ test("server-renders the PlayWorld project page", async () => {
   const html = await response.text();
   assert.match(html, /<title>PlayWorld/);
   assert.match(html, /<h1>PlayWorld<\/h1>/);
+  assert.match(html, /Benchmarking World Models with Agent Players over Long-Horizon Objectives/);
+  assert.match(html, /Kaixin Ding · Xi Chen · Minghong Cai/);
+  assert.match(html, /Kuaishou Technology · The University of Hong Kong/);
+  assert.match(html, /id="gallery"/);
+  assert.match(html, /id="leaderboard"/);
+  assert.doesNotMatch(html, /href="#suite"|id="suite"/);
   assert.match(html, /hero-mosaic\/genie-gc004\.mp4/);
   assert.match(html, /hero-mosaic\/happyoyster-gc016\.mp4/);
   assert.equal((html.match(/hero-mosaic\//g) ?? []).length, 40);

@@ -25,10 +25,15 @@
 .hero .eyebrow{color:rgba(255,255,255,.72)}
 .hero h1{max-width:none;margin:24px 0 18px;font-family:Georgia,'Times New Roman',serif;font-size:clamp(76px,10vw,144px);font-weight:700;letter-spacing:-.07em;line-height:.84;text-shadow:0 6px 36px rgba(10,4,16,.55)}
 .hero-subtitle{max-width:790px;margin:0;color:rgba(255,255,255,.84);font-size:clamp(16px,1.7vw,21px);line-height:1.55;text-shadow:0 2px 18px rgba(10,4,16,.7)}
-.hero-stats{display:flex;align-items:stretch;justify-content:center;margin-top:30px;border-top:1px solid rgba(255,255,255,.22);border-bottom:1px solid rgba(255,255,255,.22)}
+.paper-title{max-width:860px;margin:0;color:#fff;font-size:clamp(16px,1.65vw,21px);font-weight:650;line-height:1.4;text-shadow:0 2px 18px rgba(10,4,16,.75)}
+.paper-authors{max-width:900px;margin:18px 0 0;color:rgba(255,255,255,.86);font-size:12px;line-height:1.55;text-shadow:0 2px 14px rgba(10,4,16,.8)}
+.paper-affiliations{margin:6px 0 0;color:rgba(255,255,255,.62);font:10px var(--mono);letter-spacing:.06em;text-transform:uppercase}
+.hero-stats{display:flex;align-items:stretch;justify-content:center;margin-top:20px;border-top:1px solid rgba(255,255,255,.22);border-bottom:1px solid rgba(255,255,255,.22)}
 .hero-stats div{min-width:132px;padding:13px 24px;border-right:1px solid rgba(255,255,255,.18)}.hero-stats div:last-child{border-right:0}
 .hero-stats strong{display:block;font-size:22px;letter-spacing:-.035em}.hero-stats span{display:block;margin-top:3px;font:9px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.58)}
 .hero-actions{margin-top:24px}.hero .button{border-radius:999px;padding:12px 19px}.hero .button.primary{background:#fff;color:#4d216a}.hero .button.ghost{border-color:rgba(255,255,255,.42);background:rgba(55,26,76,.35);color:#fff;backdrop-filter:blur(8px)}
+.hero-links{display:flex;flex-wrap:wrap;justify-content:center;gap:9px;margin-top:18px}.hero-links a{padding:9px 17px;border:1px solid rgba(255,255,255,.3);border-radius:999px;background:rgba(48,22,66,.38);color:#fff;font-size:11px;font-weight:650;backdrop-filter:blur(8px)}
+.engine,.findings{scroll-margin-top:74px}
 .section{padding-top:94px;padding-bottom:94px}
 .pipeline-figures figure{display:grid;place-items:center;padding:14px}
 .pipeline-figures img{width:auto;max-width:100%;height:auto;max-height:min(76vh,790px);object-fit:contain}
@@ -39,4 +44,4 @@
 .result-table-head h3{margin-top:0}
 
 @media(max-width:1000px){.hero{height:auto;min-height:680px}.hero-content{min-height:680px}.hero-stats div{min-width:112px;padding:12px 18px}}
-@media(max-width:640px){.hero{min-height:650px;padding:0}.hero-media{grid-template-columns:repeat(5,1fr);grid-template-rows:repeat(8,1fr);gap:2px;padding:2px}.hero-video-panel video{object-position:center}.hero-content{min-height:650px;width:88vw;padding:42px 0}.hero h1{font-size:70px;margin:20px 0 16px}.hero-subtitle{font-size:15px}.hero-stats{display:grid;grid-template-columns:1fr 1fr;width:100%;max-width:340px}.hero-stats div{min-width:0;padding:10px 12px}.hero-stats div:nth-child(2){border-right:0}.hero-stats div:nth-child(-n+2){border-bottom:1px solid rgba(255,255,255,.18)}.hero-actions{flex-direction:row;align-items:center}.section{padding-top:76px;padding-bottom:76px}.pipeline-figures img{max-height:none}}
+@media(max-width:640px){.hero{min-height:720px;padding:0}.hero-media{grid-template-columns:repeat(5,1fr);grid-template-rows:repeat(8,1fr);gap:2px;padding:2px}.hero-video-panel video{object-position:center}.hero-content{min-height:720px;width:90vw;padding:38px 0}.hero h1{font-size:68px;margin:18px 0 14px}.paper-title{font-size:14px}.paper-authors{margin-top:13px;font-size:10px;line-height:1.45}.paper-affiliations{font-size:8px}.hero-stats{display:grid;grid-template-columns:1fr 1fr;width:100%;max-width:340px;margin-top:15px}.hero-stats div{min-width:0;padding:8px 12px}.hero-stats div:nth-child(2){border-right:0}.hero-stats div:nth-child(-n+2){border-bottom:1px solid rgba(255,255,255,.18)}.hero-links{margin-top:14px}.hero-links a{padding:8px 13px}.section{padding-top:76px;padding-bottom:76px}.pipeline-figures img{max-height:none}}

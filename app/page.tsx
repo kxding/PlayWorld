@@ -89,7 +89,7 @@ export default function Home() {
       <nav className="nav" aria-label="Main navigation">
         <a className="brand" href="#top"><span className="brand-mark">P</span><span>PlayWorld</span></a>
         <div className="nav-links">
-          <a href="#top">Overview</a><a href="#method">Method</a><a href="#suite">Pipeline</a><a href="#demos">Demos</a><a href="#findings">Leaderboard</a>
+          <a href="#top">Overview</a><a href="#method">Method</a><a href="#gallery">Pipeline</a><a href="#demos">Demos</a><a href="#leaderboard">Leaderboard</a>
         </div>
         <a className="nav-cta" href="#demos">Demos</a>
       </nav>
@@ -102,11 +102,13 @@ export default function Home() {
         <div className="hero-content">
           <div className="eyebrow">PLAYER-GUIDED EVALUATION FOR INTERACTIVE WORLD MODELS</div>
           <h1>PlayWorld</h1>
-          <p className="hero-subtitle">A long-horizon benchmark for whether generated worlds remain consistent, interactive, and temporally coherent across complete trajectories—not only isolated frames.</p>
+          <p className="paper-title">Benchmarking World Models with Agent Players over Long-Horizon Objectives</p>
+          <p className="paper-authors">Kaixin Ding · Xi Chen · Minghong Cai · Zhiyuan Xu · Yiyang Wang · Yuxiang Lu · Junyi Li · Shuyang Chen · Yuan Gao · Xin Tao · Pengfei Wan · Hengshuang Zhao</p>
+          <p className="paper-affiliations">Kuaishou Technology · The University of Hong Kong</p>
           <div className="hero-stats" aria-label="Benchmark summary">
             <div><strong>171</strong><span>Cases</span></div><div><strong>1,417</strong><span>Videos</span></div><div><strong>30–60s</strong><span>Rollouts</span></div><div><strong>9+</strong><span>Models</span></div>
           </div>
-          <div className="hero-actions"><a className="button primary" href="#demos">View model demos</a><a className="button ghost" href="#suite">Pipeline</a></div>
+          <div className="hero-links" aria-label="Project links"><a href="#gallery">Paper</a><a href="#gallery">GitHub</a><a href="#leaderboard">Leaderboard</a><a href="#gallery">Dataset</a></div>
         </div>
       </section>
 
@@ -121,10 +123,10 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="section engine">
+      <section className="section engine" id="gallery">
         <div className="section-kicker">02 / PIPELINE</div>
         <div className="section-head"><h2>Pipeline.</h2></div>
-        <div className="pipeline-figures" id="suite">
+        <div className="pipeline-figures">
           <figure><img src="/figures/fig1-overview-latest.jpg" alt="Overview of the PlayWorld evaluation pipeline, four task families, and model rankings"/><figcaption>Overview of PlayWorld</figcaption></figure>
           <div className="benchmark-table-block">
             <h3>Comparison of world-model evaluation benchmarks</h3>
@@ -158,7 +160,7 @@ export default function Home() {
         <div className="model-tabs" role="tablist" aria-label="Choose a model">{demos.map((demo,index)=><button key={demo.model} className={index===activeIndex?"active":""} onClick={()=>setActiveIndex(index)} role="tab" aria-selected={index===activeIndex}><span>{String(index+1).padStart(2,"0")}</span>{demo.model}</button>)}</div>
       </section>
 
-      <section className="section findings" id="findings">
+      <section className="section findings" id="leaderboard">
         <div className="section-kicker light">04 / LEADERBOARD</div>
         <div className="section-head light-head"><h2>Model ranking.</h2><p>Select one capability to view its ranking.</p></div>
         <div className="leaderboard-panel">
