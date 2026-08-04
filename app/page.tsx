@@ -70,33 +70,20 @@ export default function Home() {
       </section>
 
       <section className="section engine">
-        <div className="section-kicker">03 / HOW WE EVALUATE</div>
-        <div className="section-head"><h2>Evaluation pipeline.</h2><p>The player executes structured actions and records evidence for case-specific VQA.</p></div>
-        <div className="flow" id="suite">
-          <div className="flow-node"><span>01</span><b>Task-conditioned<br/>action sequence</b><small>Prompt · first frame · controls</small></div><div className="flow-arrow">→</div>
-          <div className="flow-node featured"><span>02</span><b>PlayWorldEngine</b><small>Live session · timed actions · capture</small></div><div className="flow-loop"><strong>PLAYER</strong><i>↕</i><small>adaptive decisions</small></div>
-          <div className="flow-arrow">→</div><div className="flow-node"><span>03</span><b>Interactive<br/>world model</b><small>Frames · state · response</small></div><div className="flow-arrow">→</div>
-          <div className="flow-node"><span>04</span><b>Evidence-grounded<br/>VQA</b><small>4–7 case-specific checks</small></div>
+        <div className="section-kicker">03 / PIPELINE</div>
+        <div className="section-head"><h2>Pipeline.</h2></div>
+        <div className="pipeline-figures" id="suite">
+          <figure><img src="/figures/fig1-overview-latest.jpg" alt="Figure 1 overview of the PlayWorld evaluation pipeline, four task families, and model rankings"/><figcaption>Figure 1. Overview of PlayWorld.</figcaption></figure>
+          <figure><img src="/figures/table1-latest.jpg" alt="Table 1 comparison of world-model evaluation benchmarks"/><figcaption>Table 1. Comparison of world-model evaluation benchmarks.</figcaption></figure>
         </div>
-        <div className="suite-strip"><span>171 CASES</span><span>48 GC</span><span>50 IF</span><span>30 INSIGHT</span><span>43 OUT-OF-SIGHT</span><span>797 APPLICABLE QUESTIONS</span></div>
       </section>
 
       <section className="section paper-evidence" id="paper">
         <div className="section-kicker">04 / FROM THE PAPER</div>
-        <div className="section-head"><h2>Selected paper figures.</h2><p>Benchmark design, data construction, and qualitative results.</p></div>
-        <figure className="paper-hero"><img src="/figures/paper-teaser.jpg" alt="PlayWorld paper overview showing four evaluation families, the player-guided engine, and model ranking snapshots"/><figcaption>Paper overview: what PlayWorld evaluates, how the adaptive player controls rollouts, and the resulting capability rankings.</figcaption></figure>
+        <div className="section-head"><h2>Selected paper figures.</h2><p>Data construction and qualitative results.</p></div>
         <div className="paper-pair">
           <figure><img src="/figures/paper-data-construction.jpg" alt="PlayWorld dataset construction pipeline from initial world settings through objectives, actions, and structured VQA questions"/><figcaption>Data construction pipeline: real starting worlds, long-horizon objectives, executable controls, and structured VQA.</figcaption></figure>
           <figure><img src="/figures/paper-qualitative.jpg" alt="Qualitative PlayWorld failure cases across interaction, geometry, insight, and out-of-sight evolution"/><figcaption>Qualitative evidence: localized failures in interaction, geometry, visible evolution, and hidden-state evolution.</figcaption></figure>
-        </div>
-        <div className="paper-table-wrap">
-          <div><small>BENCHMARK COMPOSITION</small><h3>171 cases across four task families.</h3><p>Insight and Out-of-sight Evolution are evaluated separately.</p></div>
-          <table><thead><tr><th>Task family</th><th>Cases</th><th>Primary temporal test</th></tr></thead><tbody>
-            <tr><td><span className="dot cyan-dot"/>Geometry Consistency</td><td>48</td><td>Revisit and loop closure</td></tr>
-            <tr><td><span className="dot coral-dot"/>Interaction Fidelity</td><td>50</td><td>Approach, contact, response</td></tr>
-            <tr><td><span className="dot violet-dot"/>Insight Evolution</td><td>30</td><td>Continuous visible progression</td></tr>
-            <tr><td><span className="dot gold-dot"/>Out-of-sight Evolution</td><td>43</td><td>Hidden progression and reveal</td></tr>
-          </tbody><tfoot><tr><td>Total</td><td>171</td><td>30–60 s rollouts</td></tr></tfoot></table>
         </div>
       </section>
 

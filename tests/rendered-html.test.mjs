@@ -23,6 +23,8 @@ test("server-renders the PlayWorld project page", async () => {
   assert.match(html, /Out-of-sight Evolution/);
   assert.match(html, /Model ranking/);
   assert.match(html, /Ranking metric/);
+  assert.match(html, /Figure 1\. Overview of PlayWorld/);
+  assert.match(html, /Table 1\. Comparison of world-model evaluation benchmarks/);
   assert.match(html, new RegExp("/og\\.jpg"));
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape/);
 });
