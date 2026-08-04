@@ -24,6 +24,19 @@ const rankings: Record<RankingFamily, string[]> = {
   "Out-of-sight Evolution": ["Genie3", "HappyOyster", "LingBot-World", "Gamecraft2", "LingBot-World2 & SANA-WM"],
 };
 
+const benchmarkRows = [
+  ["WorldScore", "Text + Image + Camera", "no", "no", "no", "~2–10 s", "yes", "no", "no"],
+  ["WorldSimBench", "Text + Image", "no", "partial", "no", "~2–10 s", "no", "no", "partial"],
+  ["WorldMark", "Image + Actions", "yes", "no", "no", "20 / 40 / 60 s", "yes", "no", "no"],
+  ["WBench", "Text + Image + Camera / Actions", "yes", "no", "yes", "~5–10 s", "yes", "partial", "yes"],
+  ["WorldRoamBench", "Image + Actions", "yes", "no", "yes", "10–60 s", "yes", "partial", "yes"],
+  ["MemoBench", "Text + Image + Camera", "no", "no", "yes", "~5–10 s", "yes", "yes", "no"],
+  ["Omni-WorldBench", "Text + Image + Camera", "no", "no", "yes", "3–6 s", "partial", "yes", "yes"],
+  ["PlayWorld (Ours)", "Text + Image + Objective", "yes", "yes", "yes", "10–60 s", "yes", "yes", "yes"],
+] as const;
+
+const statusMark = (value: "yes" | "no" | "partial") => value === "yes" ? "✓" : value === "no" ? "✕" : "~";
+
 export default function Home() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [rankingFamily, setRankingFamily] = useState<RankingFamily>("Geometry Consistency");
@@ -35,7 +48,7 @@ export default function Home() {
       <nav className="nav" aria-label="Main navigation">
         <a className="brand" href="#top"><span className="brand-mark">P</span><span>PlayWorld</span></a>
         <div className="nav-links">
-          <a href="#overview">Overview</a><a href="#method">Method</a><a href="#paper">Paper Figures</a><a href="#demos">Demos</a><a href="#findings">Leaderboard</a>
+          <a href="#overview">Overview</a><a href="#method">Method</a><a href="#suite">Pipeline</a><a href="#demos">Demos</a><a href="#findings">Leaderboard</a>
         </div>
         <a className="nav-cta" href="#demos">Demos</a>
       </nav>
@@ -44,7 +57,7 @@ export default function Home() {
         <div className="eyebrow">PLAYER-GUIDED EVALUATION FOR INTERACTIVE WORLD MODELS</div>
         <h1>PlayWorld</h1>
         <p className="hero-subtitle">Evaluating whether generated worlds remain consistent, interactive, and temporally coherent over long rollouts.</p>
-        <div className="hero-actions"><a className="button primary" href="#demos">View model demos</a><a className="button ghost" href="#paper">Paper figures</a></div>
+        <div className="hero-actions"><a className="button primary" href="#demos">View model demos</a><a className="button ghost" href="#suite">Pipeline</a></div>
         <div className="metric-row">
           <div><strong>171</strong><span>benchmark cases</span></div>
           <div><strong>1,417</strong><span>interactive videos</span></div>
@@ -74,21 +87,21 @@ export default function Home() {
         <div className="section-head"><h2>Pipeline.</h2></div>
         <div className="pipeline-figures" id="suite">
           <figure><img src="/figures/fig1-overview-latest.jpg" alt="Figure 1 overview of the PlayWorld evaluation pipeline, four task families, and model rankings"/><figcaption>Figure 1. Overview of PlayWorld.</figcaption></figure>
-          <figure><img src="/figures/table1-latest.jpg" alt="Table 1 comparison of world-model evaluation benchmarks"/><figcaption>Table 1. Comparison of world-model evaluation benchmarks.</figcaption></figure>
-        </div>
-      </section>
-
-      <section className="section paper-evidence" id="paper">
-        <div className="section-kicker">04 / FROM THE PAPER</div>
-        <div className="section-head"><h2>Selected paper figures.</h2><p>Data construction and qualitative results.</p></div>
-        <div className="paper-pair">
-          <figure><img src="/figures/paper-data-construction.jpg" alt="PlayWorld dataset construction pipeline from initial world settings through objectives, actions, and structured VQA questions"/><figcaption>Data construction pipeline: real starting worlds, long-horizon objectives, executable controls, and structured VQA.</figcaption></figure>
-          <figure><img src="/figures/paper-qualitative.jpg" alt="Qualitative PlayWorld failure cases across interaction, geometry, insight, and out-of-sight evolution"/><figcaption>Qualitative evidence: localized failures in interaction, geometry, visible evolution, and hidden-state evolution.</figcaption></figure>
+          <div className="benchmark-table-block">
+            <h3>Table 1. Comparison of world-model evaluation benchmarks.</h3>
+            <p>✓ full coverage · ✕ no coverage · ~ partial coverage</p>
+            <div className="benchmark-table-scroll">
+              <table className="benchmark-table">
+                <thead><tr><th>Benchmark</th><th>Input</th><th>Unified cross-model</th><th>Closed-loop adaptation</th><th>Revisit trajectory</th><th>Time scale / video</th><th>Geometry consistency</th><th>State evolution</th><th>Interaction fidelity</th></tr></thead>
+                <tbody>{benchmarkRows.map((row) => <tr key={row[0]}>{row.map((cell, index) => index < 2 || index === 5 ? <td key={index}>{cell}</td> : <td key={index} className={`status status-${cell}`}>{statusMark(cell as "yes" | "no" | "partial")}</td>)}</tr>)}</tbody>
+              </table>
+            </div>
+          </div>
         </div>
       </section>
 
       <section className="section demos" id="demos">
-        <div className="section-kicker">05 / CURATED MODEL ROLLOUTS</div>
+        <div className="section-kicker">04 / CURATED MODEL ROLLOUTS</div>
         <div className="section-head"><h2>Model demos.</h2><p>One representative rollout over 30 seconds for each model.</p></div>
         <div className="demo-shell">
           <div className="video-wrap">
@@ -107,7 +120,7 @@ export default function Home() {
       </section>
 
       <section className="section findings" id="findings">
-        <div className="section-kicker light">06 / LEADERBOARD</div>
+        <div className="section-kicker light">05 / LEADERBOARD</div>
         <div className="section-head light-head"><h2>Model ranking.</h2><p>Select one capability to view its ranking.</p></div>
         <div className="leaderboard-panel">
           <label htmlFor="ranking-family">Ranking metric</label>

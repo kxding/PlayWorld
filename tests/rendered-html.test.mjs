@@ -25,6 +25,9 @@ test("server-renders the PlayWorld project page", async () => {
   assert.match(html, /Ranking metric/);
   assert.match(html, /Figure 1\. Overview of PlayWorld/);
   assert.match(html, /Table 1\. Comparison of world-model evaluation benchmarks/);
+  assert.match(html, /<table class="benchmark-table">/);
+  assert.doesNotMatch(html, /Selected paper figures/);
+  assert.doesNotMatch(html, /table1-latest\.jpg/);
   assert.match(html, new RegExp("/og\\.jpg"));
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape/);
 });
