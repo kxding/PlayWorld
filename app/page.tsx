@@ -104,7 +104,7 @@ export default function Home() {
           <h1>PlayWorld</h1>
           <p className="hero-subtitle">A long-horizon benchmark for whether generated worlds remain consistent, interactive, and temporally coherent across complete trajectories—not only isolated frames.</p>
           <div className="hero-stats" aria-label="Benchmark summary">
-            <div><strong>171</strong><span>Cases</span></div><div><strong>1,417</strong><span>Videos</span></div><div><strong>30–60s</strong><span>Rollouts</span></div><div><strong>4</strong><span>Task families</span></div>
+            <div><strong>171</strong><span>Cases</span></div><div><strong>1,417</strong><span>Videos</span></div><div><strong>30–60s</strong><span>Rollouts</span></div><div><strong>9+</strong><span>Models</span></div>
           </div>
           <div className="hero-actions"><a className="button primary" href="#demos">View model demos</a><a className="button ghost" href="#suite">Pipeline</a></div>
         </div>

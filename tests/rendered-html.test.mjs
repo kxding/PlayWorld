@@ -21,6 +21,7 @@ test("server-renders the PlayWorld project page", async () => {
   assert.equal((html.match(/hero-mosaic\//g) ?? []).length, 40);
   assert.doesNotMatch(html, /01 \/ THE QUESTION/);
   assert.match(html, /Model demos/);
+  assert.match(html, /<strong>9\+<\/strong><span>Models<\/span>/);
   assert.match(html, /Geometry Consistency/);
   assert.match(html, /Interaction Fidelity/);
   assert.match(html, /Insight Evolution/);
