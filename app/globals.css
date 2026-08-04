@@ -17,12 +17,10 @@
 /* Compact media-led opening, informed by WorldRoam's centered mosaic hero. */
 .hero{height:calc(100svh - 74px);min-height:620px;padding:0;overflow:hidden;color:#fff;background:#160e20}
 .hero-media,.hero-shade{position:absolute;inset:0}
-.hero-media{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:#281736}
+.hero-media{display:grid;grid-template-columns:repeat(8,1fr);grid-template-rows:repeat(5,1fr);gap:3px;padding:3px;background:#281736}
 .hero-video-panel{position:relative;min-width:0;overflow:hidden;background:#160e20}
-.hero-video-panel video{width:100%;height:100%;display:block;object-fit:cover;filter:saturate(.9) contrast(1.04)}
-.hero-video-panel span{position:absolute;bottom:20px;font:9px var(--mono);letter-spacing:.12em;color:rgba(255,255,255,.62);z-index:2}
-.hero-video-panel:first-child span{left:24px}.hero-video-panel:last-child span{right:24px}
-.hero-shade{z-index:1;background:radial-gradient(ellipse 65% 62% at 50% 47%,rgba(36,16,51,.38) 0%,rgba(30,14,44,.67) 58%,rgba(20,10,30,.83) 100%),linear-gradient(90deg,rgba(73,35,105,.35),rgba(117,57,147,.2),rgba(73,35,105,.35))}
+.hero-video-panel video{width:100%;height:100%;display:block;object-fit:contain;background:#110a18;filter:saturate(.9) contrast(1.04)}
+.hero-shade{z-index:1;background:radial-gradient(ellipse 62% 60% at 50% 47%,rgba(36,16,51,.5) 0%,rgba(30,14,44,.66) 58%,rgba(20,10,30,.77) 100%),linear-gradient(90deg,rgba(73,35,105,.28),rgba(117,57,147,.14),rgba(73,35,105,.28))}
 .hero-content{position:relative;z-index:2;width:min(920px,88vw);height:100%;margin:0 auto;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:48px 0}
 .hero .eyebrow{color:rgba(255,255,255,.72)}
 .hero h1{max-width:none;margin:24px 0 18px;font-family:Georgia,'Times New Roman',serif;font-size:clamp(76px,10vw,144px);font-weight:700;letter-spacing:-.07em;line-height:.84;text-shadow:0 6px 36px rgba(10,4,16,.55)}
@@ -34,7 +32,11 @@
 .section{padding-top:94px;padding-bottom:94px}
 .pipeline-figures figure{display:grid;place-items:center;padding:14px}
 .pipeline-figures img{width:auto;max-width:100%;height:auto;max-height:min(76vh,790px);object-fit:contain}
-.pipeline-figures figcaption{width:100%}
+.pipeline-figures figcaption{width:100%;text-align:center;font-size:12px;font-weight:650}
+.benchmark-table-block h3{text-align:center}
+.benchmark-table-block>p{text-align:center}
+.result-table-head{text-align:center}
+.result-table-head h3{margin-top:0}
 
 @media(max-width:1000px){.hero{height:auto;min-height:680px}.hero-content{min-height:680px}.hero-stats div{min-width:112px;padding:12px 18px}}
-@media(max-width:640px){.hero{min-height:650px;padding:0}.hero-media{grid-template-columns:1fr 1fr}.hero-video-panel video{object-position:center}.hero-video-panel span{bottom:12px}.hero-video-panel:first-child span{left:12px}.hero-video-panel:last-child span{right:12px}.hero-content{min-height:650px;width:88vw;padding:42px 0}.hero h1{font-size:70px;margin:20px 0 16px}.hero-subtitle{font-size:15px}.hero-stats{display:grid;grid-template-columns:1fr 1fr;width:100%;max-width:340px}.hero-stats div{min-width:0;padding:10px 12px}.hero-stats div:nth-child(2){border-right:0}.hero-stats div:nth-child(-n+2){border-bottom:1px solid rgba(255,255,255,.18)}.hero-actions{flex-direction:row;align-items:center}.section{padding-top:76px;padding-bottom:76px}.pipeline-figures img{max-height:none}}
+@media(max-width:640px){.hero{min-height:650px;padding:0}.hero-media{grid-template-columns:repeat(5,1fr);grid-template-rows:repeat(8,1fr);gap:2px;padding:2px}.hero-video-panel video{object-position:center}.hero-content{min-height:650px;width:88vw;padding:42px 0}.hero h1{font-size:70px;margin:20px 0 16px}.hero-subtitle{font-size:15px}.hero-stats{display:grid;grid-template-columns:1fr 1fr;width:100%;max-width:340px}.hero-stats div{min-width:0;padding:10px 12px}.hero-stats div:nth-child(2){border-right:0}.hero-stats div:nth-child(-n+2){border-bottom:1px solid rgba(255,255,255,.18)}.hero-actions{flex-direction:row;align-items:center}.section{padding-top:76px;padding-bottom:76px}.pipeline-figures img{max-height:none}}

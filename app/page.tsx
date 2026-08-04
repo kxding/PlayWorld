@@ -14,14 +14,19 @@ const demos = [
   { model: "Matrix-Game 3", org: "Skywork AI", caseId: "OE030", family: "Out-of-sight Evolution", duration: "33.5s", src: "/demos/matrixgame3-oe030.mp4", poster: "/posters/matrixgame3-oe030.jpg", prompt: "Follow the silver SUV down the spiral ramp, then tilt back up." },
 ];
 
-const rankingFamilies = ["Geometry Consistency", "Interaction Fidelity", "Insight Evolution", "Out-of-sight Evolution"] as const;
+const heroModels = ["genie", "happyoyster", "hyworld2", "lingbotworld-va2", "gamecraft2", "sana-wm", "hy-worldplay", "matrixgame3-native"] as const;
+const heroCases = ["gc004", "gc016", "if008", "if030", "oe005"] as const;
+const heroVideos = heroCases.flatMap((caseId) => heroModels.map((model) => ({ model, caseId, src: `/hero-mosaic/${model}-${caseId}.mp4` })));
+
+const rankingFamilies = ["Overall", "Geometry Consistency", "Interaction Fidelity", "Insight Evolution", "Out-of-sight Evolution"] as const;
 type RankingFamily = (typeof rankingFamilies)[number];
 
-const rankings: Record<RankingFamily, string[]> = {
-  "Geometry Consistency": ["Genie3", "HappyOyster", "HY-World2", "LingBot-World", "LingBot-World2"],
-  "Interaction Fidelity": ["Genie3", "LingBot-World", "HappyOyster", "LingBot-World2", "HY-World2"],
-  "Insight Evolution": ["LingBot-World2", "Genie3", "HappyOyster", "LingBot-World", "Gamecraft2"],
-  "Out-of-sight Evolution": ["Genie3", "HappyOyster", "LingBot-World", "Gamecraft2", "LingBot-World2 & SANA-WM"],
+const rankings: Record<RankingFamily, { model: string; score: number }[]> = {
+  "Overall": [{model:"Genie3",score:2.12},{model:"HappyOyster",score:1.92},{model:"LingBot-World2",score:1.82},{model:"LingBot-World",score:1.78},{model:"HY-World2",score:1.61},{model:"SANA-WM",score:1.48},{model:"Hunyuan-GameCraft-2",score:1.42},{model:"HY-WorldPlay",score:1.21},{model:"Matrix-Game-3.0",score:1.14}],
+  "Geometry Consistency": [{model:"Genie3",score:2.74},{model:"HappyOyster",score:2.54},{model:"HY-World2",score:2.14},{model:"LingBot-World",score:2.11},{model:"LingBot-World2",score:2.04},{model:"SANA-WM",score:1.72},{model:"Hunyuan-GameCraft-2",score:1.62},{model:"Matrix-Game-3.0",score:1.30},{model:"HY-WorldPlay",score:1.12}],
+  "Interaction Fidelity": [{model:"Genie3",score:2.40},{model:"LingBot-World",score:2.23},{model:"HappyOyster",score:2.15},{model:"LingBot-World2",score:2.13},{model:"HY-World2",score:2.06},{model:"SANA-WM",score:1.89},{model:"HY-WorldPlay",score:1.63},{model:"Hunyuan-GameCraft-2",score:1.52},{model:"Matrix-Game-3.0",score:1.25}],
+  "Insight Evolution": [{model:"LingBot-World2",score:1.95},{model:"Genie3",score:1.51},{model:"HappyOyster",score:1.47},{model:"LingBot-World",score:1.33},{model:"Hunyuan-GameCraft-2",score:1.21},{model:"HY-World2",score:1.13},{model:"SANA-WM",score:1.13},{model:"HY-WorldPlay",score:1.01},{model:"Matrix-Game-3.0",score:1.00}],
+  "Out-of-sight Evolution": [{model:"Genie3",score:1.81},{model:"HappyOyster",score:1.54},{model:"LingBot-World",score:1.43},{model:"Hunyuan-GameCraft-2",score:1.31},{model:"LingBot-World2",score:1.16},{model:"SANA-WM",score:1.16},{model:"HY-World2",score:1.09},{model:"HY-WorldPlay",score:1.08},{model:"Matrix-Game-3.0",score:1.00}],
 };
 
 const benchmarkRows = [
@@ -75,7 +80,7 @@ const statusMark = (value: "yes" | "no" | "partial") => value === "yes" ? "✓" 
 
 export default function Home() {
   const [activeIndex, setActiveIndex] = useState(0);
-  const [rankingFamily, setRankingFamily] = useState<RankingFamily>("Geometry Consistency");
+  const [rankingFamily, setRankingFamily] = useState<RankingFamily>("Overall");
   const active = demos[activeIndex];
   const step = (delta: number) => setActiveIndex((activeIndex + delta + demos.length) % demos.length);
 
@@ -91,8 +96,7 @@ export default function Home() {
 
       <section className="hero" id="top">
         <div className="hero-media" aria-hidden="true">
-          <div className="hero-video-panel"><video autoPlay muted loop playsInline preload="metadata" poster="/posters/genie3-gc004.jpg"><source src="/demos/genie3-gc004.mp4" type="video/mp4"/></video><span>GENIE 3 · GC004</span></div>
-          <div className="hero-video-panel"><video autoPlay muted loop playsInline preload="metadata" poster="/posters/happyoyster-gc016.jpg"><source src="/demos/happyoyster-gc016.mp4" type="video/mp4"/></video><span>HAPPYOYSTER · GC016</span></div>
+          {heroVideos.map((item) => <div className="hero-video-panel" key={`${item.model}-${item.caseId}`}><video autoPlay muted loop playsInline preload="metadata"><source src={item.src} type="video/mp4"/></video></div>)}
         </div>
         <div className="hero-shade"/>
         <div className="hero-content">
@@ -121,9 +125,9 @@ export default function Home() {
         <div className="section-kicker">02 / PIPELINE</div>
         <div className="section-head"><h2>Pipeline.</h2></div>
         <div className="pipeline-figures" id="suite">
-          <figure><img src="/figures/fig1-overview-latest.jpg" alt="Figure 1 overview of the PlayWorld evaluation pipeline, four task families, and model rankings"/><figcaption>Figure 1. Overview of PlayWorld.</figcaption></figure>
+          <figure><img src="/figures/fig1-overview-latest.jpg" alt="Overview of the PlayWorld evaluation pipeline, four task families, and model rankings"/><figcaption>Overview of PlayWorld</figcaption></figure>
           <div className="benchmark-table-block">
-            <h3>Table 1. Comparison of world-model evaluation benchmarks.</h3>
+            <h3>Comparison of world-model evaluation benchmarks</h3>
             <p>✓ full coverage · ✕ no coverage · ~ partial coverage</p>
             <div className="benchmark-table-scroll">
               <table className="benchmark-table">
@@ -163,15 +167,15 @@ export default function Home() {
             {rankingFamilies.map((family) => <option key={family} value={family}>{family}</option>)}
           </select>
           <div className="ranking-table-wrap">
-            <table className="ranking-table"><thead><tr><th>Rank</th><th>Model</th><th>Capability</th></tr></thead><tbody>
-              {rankings[rankingFamily].map((model, index) => <tr key={model}><td>{index + 1}</td><td>{model}</td><td>{rankingFamily}</td></tr>)}
+            <table className="ranking-table"><thead><tr><th>Rank</th><th>Model</th><th>Score</th></tr></thead><tbody>
+              {rankings[rankingFamily].map((entry) => <tr key={entry.model}><td>{rankings[rankingFamily].findIndex((candidate) => candidate.score === entry.score) + 1}</td><td>{entry.model}</td><td>{entry.score.toFixed(2)}</td></tr>)}
             </tbody></table>
           </div>
         </div>
-        <p className="fineprint">Ranking reproduced from the current paper overview figure. Rank 5 in Out-of-sight Evolution is tied.</p>
+        <p className="fineprint">Complete nine-model ranking from the current paper results. Equal scores share a rank.</p>
         <div className="result-tables">
           <article className="result-table-card">
-            <div className="result-table-head"><span>TABLE 2</span><h3>VQA-based evaluation</h3><p>Scores range from 1 to 5. Overall is the unweighted mean of the four dimensions.</p></div>
+            <div className="result-table-head"><h3>VQA-based evaluation</h3><p>Scores range from 1 to 5. Overall is the unweighted mean of the four dimensions.</p></div>
             <div className="result-table-scroll">
               <table className="result-table">
                 <thead><tr><th>Setting</th><th>Model</th><th className="group-geometry">Geometry consistency ↑</th><th className="group-interaction">Interaction fidelity ↑</th><th className="group-insight">Insight evolution ↑</th><th className="group-oos">Out-of-sight evolution ↑</th><th>Overall ↑</th></tr></thead>
@@ -181,7 +185,7 @@ export default function Home() {
           </article>
 
           <article className="result-table-card">
-            <div className="result-table-head"><span>TABLE 3 · A</span><h3>Basic video quality</h3><p>Five normalized components and their mean. Higher is better.</p></div>
+            <div className="result-table-head"><h3>Basic video quality</h3><p>Five normalized components and their mean. Higher is better.</p></div>
             <div className="result-table-scroll">
               <table className="result-table compact-results">
                 <thead><tr><th>Setting</th><th>Model</th><th>Aes. ↑</th><th>Img. ↑</th><th>Mot. ↑</th><th>Flick. ↑</th><th>Temp. ↑</th><th>Avg. ↑</th></tr></thead>
@@ -191,7 +195,7 @@ export default function Home() {
           </article>
 
           <article className="result-table-card">
-            <div className="result-table-head"><span>TABLE 3 · B</span><h3>Memory consistency and action alignment</h3><p>Higher is better for Geo3D and DSCctx; lower is better for translation and rotation error.</p></div>
+            <div className="result-table-head"><h3>Memory consistency and action alignment</h3><p>Higher is better for Geo3D and DSCctx; lower is better for translation and rotation error.</p></div>
             <div className="result-table-scroll">
               <table className="result-table compact-results">
                 <thead><tr><th>Setting</th><th>Model</th><th className="group-memory">Geo3D ↑</th><th className="group-memory">DSCctx ↑</th><th className="group-action">Translation error ↓</th><th className="group-action">Rotation error (°) ↓</th></tr></thead>
