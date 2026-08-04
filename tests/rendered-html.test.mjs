@@ -15,12 +15,14 @@ test("server-renders the PlayWorld project page", async () => {
   assert.equal(response.status, 200);
   const html = await response.text();
   assert.match(html, /<title>PlayWorld/);
-  assert.match(html, /Can a generated world/);
-  assert.match(html, /One long-horizon case/);
+  assert.match(html, /<h1>PlayWorld<\/h1>/);
+  assert.match(html, /Model demos/);
   assert.match(html, /Geometry Consistency/);
   assert.match(html, /Interaction Fidelity/);
   assert.match(html, /Insight Evolution/);
   assert.match(html, /Out-of-sight Evolution/);
+  assert.match(html, /Model ranking/);
+  assert.match(html, /Ranking metric/);
   assert.match(html, new RegExp("/og\\.jpg"));
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape/);
 });

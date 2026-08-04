@@ -14,15 +14,19 @@ const demos = [
   { model: "Matrix-Game 3", org: "Skywork AI", caseId: "OE030", family: "Out-of-sight Evolution", duration: "33.5s", src: "/demos/matrixgame3-oe030.mp4", poster: "/posters/matrixgame3-oe030.jpg", prompt: "Follow the silver SUV down the spiral ramp, then tilt back up." },
 ];
 
-const findings = [
-  { title: "Geometry Consistency", leader: "Genie 3", color: "cyan", note: "Identity, texture, color and spatial layout under viewpoint change." },
-  { title: "Interaction Fidelity", leader: "Genie 3", color: "coral", note: "Contact, support, kinematics, causality and solid boundaries." },
-  { title: "Insight Evolution", leader: "Genie 3", color: "violet", note: "Continuously visible worlds must accumulate meaningful, causal change." },
-  { title: "Out-of-sight Evolution", leader: "Genie 3", color: "gold", note: "Hidden state must progress and reappear without reset or contradiction." },
-];
+const rankingFamilies = ["Geometry Consistency", "Interaction Fidelity", "Insight Evolution", "Out-of-sight Evolution"] as const;
+type RankingFamily = (typeof rankingFamilies)[number];
+
+const rankings: Record<RankingFamily, string[]> = {
+  "Geometry Consistency": ["Genie3", "HappyOyster", "HY-World2", "LingBot-World", "LingBot-World2"],
+  "Interaction Fidelity": ["Genie3", "LingBot-World", "HappyOyster", "LingBot-World2", "HY-World2"],
+  "Insight Evolution": ["LingBot-World2", "Genie3", "HappyOyster", "LingBot-World", "Gamecraft2"],
+  "Out-of-sight Evolution": ["Genie3", "HappyOyster", "LingBot-World", "Gamecraft2", "LingBot-World2 & SANA-WM"],
+};
 
 export default function Home() {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [rankingFamily, setRankingFamily] = useState<RankingFamily>("Geometry Consistency");
   const active = demos[activeIndex];
   const step = (delta: number) => setActiveIndex((activeIndex + delta + demos.length) % demos.length);
 
@@ -31,40 +35,32 @@ export default function Home() {
       <nav className="nav" aria-label="Main navigation">
         <a className="brand" href="#top"><span className="brand-mark">P</span><span>PlayWorld</span></a>
         <div className="nav-links">
-          <a href="#overview">Overview</a><a href="#method">Method</a><a href="#paper">Paper Figures</a><a href="#demos">Demos</a><a href="#findings">Findings</a>
+          <a href="#overview">Overview</a><a href="#method">Method</a><a href="#paper">Paper Figures</a><a href="#demos">Demos</a><a href="#findings">Leaderboard</a>
         </div>
-        <a className="nav-cta" href="#demos">Explore demos <span>↘</span></a>
+        <a className="nav-cta" href="#demos">Demos</a>
       </nav>
 
       <section className="hero" id="top">
-        <div className="ambient ambient-one"/><div className="ambient ambient-two"/>
-        <div className="eyebrow"><span className="pulse"/> PLAYER-GUIDED EVALUATION FOR INTERACTIVE WORLD MODELS</div>
-        <h1>Can a generated world<br/><em>remember, respond, and evolve?</em></h1>
-        <p className="hero-copy">PlayWorld evaluates long-horizon interactive worlds through adaptive play—not isolated frames. It reveals when geometry drifts, interactions break, and off-screen states quietly reset.</p>
-        <div className="hero-actions"><a className="button primary" href="#demos">Watch model rollouts <span>▶</span></a><a className="button ghost" href="#method">See how it works <span>↓</span></a></div>
+        <div className="eyebrow">PLAYER-GUIDED EVALUATION FOR INTERACTIVE WORLD MODELS</div>
+        <h1>PlayWorld</h1>
+        <p className="hero-subtitle">Evaluating whether generated worlds remain consistent, interactive, and temporally coherent over long rollouts.</p>
+        <div className="hero-actions"><a className="button primary" href="#demos">View model demos</a><a className="button ghost" href="#paper">Paper figures</a></div>
         <div className="metric-row">
           <div><strong>171</strong><span>benchmark cases</span></div>
           <div><strong>1,417</strong><span>interactive videos</span></div>
           <div><strong>30–60s</strong><span>long-horizon rollouts</span></div>
           <div><strong>4</strong><span>diagnostic task families</span></div>
         </div>
-        <div className="hero-stage" aria-hidden="true">
-          <div className="orbit orbit-a"/><div className="orbit orbit-b"/>
-          <div className="world-card world-card-a"><img src="/figures/gc001.jpg" alt=""/><span>REVISIT</span></div>
-          <div className="world-card world-card-b"><img src="/figures/if001.png" alt=""/><span>INTERACT</span></div>
-          <div className="world-card world-card-c"><img src="/figures/oe001.jpg" alt=""/><span>EVOLVE</span></div>
-          <div className="player-node"><small>VISUAL CONTROL AGENT</small><b>PLAYER</b><span>observes · decides · adapts</span></div>
-        </div>
       </section>
 
       <section className="section intro" id="overview">
         <div className="section-kicker">01 / THE QUESTION</div>
-        <div className="intro-grid"><h2>Beautiful frames are easy.<br/><span>Persistent worlds are not.</span></h2><div><p>Existing evaluations often collapse an interactive rollout into visual quality or endpoint success. PlayWorld follows the complete trajectory and asks whether early world states survive later actions.</p><p>It separates control complexity from temporal state dependency: even a single wait or rotation can demand long-range memory, causal evolution, and consistent re-observation.</p></div></div>
+        <div className="intro-grid"><h2>Long-horizon world model evaluation.</h2><div><p>PlayWorld evaluates complete interactive trajectories instead of isolated frames or endpoints.</p><p>The benchmark tests state persistence, physical response, visible evolution, and hidden-state progression.</p></div></div>
       </section>
 
       <section className="section method" id="method">
         <div className="section-kicker light">02 / WHAT WE EVALUATE</div>
-        <div className="section-head light-head"><h2>Four ways to test a world.</h2><p>A capability-specific checklist turns each rollout into localized, traceable evidence.</p></div>
+        <div className="section-head light-head"><h2>Four evaluation families.</h2><p>Each family targets a distinct temporal capability.</p></div>
         <div className="pillar-grid">
           <article className="pillar cyan"><span className="pillar-number">01</span><div className="pillar-symbol">⌁</div><h3>Geometry<br/>Consistency</h3><p>Does the same world survive motion and revisit?</p><ul><li>Identity & object count</li><li>Material & color stability</li><li>Relative 3D layout</li><li>Closed-loop return views</li></ul><b>48 cases · GC</b></article>
           <article className="pillar coral"><span className="pillar-number">02</span><div className="pillar-symbol">↯</div><h3>Interaction<br/>Fidelity</h3><p>Do actions cause coherent physical responses?</p><ul><li>Contact & support</li><li>Causal response</li><li>Motion kinematics</li><li>Collision boundaries</li></ul><b>50 cases · IF</b></article>
@@ -75,7 +71,7 @@ export default function Home() {
 
       <section className="section engine">
         <div className="section-kicker">03 / HOW WE EVALUATE</div>
-        <div className="section-head"><h2>A player in the loop.</h2><p>PlayWorldEngine runs the model, executes structured actions, and records complete interaction evidence. The Player observes intermediate frames and decides whether to keep, stop, or extend.</p></div>
+        <div className="section-head"><h2>Evaluation pipeline.</h2><p>The player executes structured actions and records evidence for case-specific VQA.</p></div>
         <div className="flow" id="suite">
           <div className="flow-node"><span>01</span><b>Task-conditioned<br/>action sequence</b><small>Prompt · first frame · controls</small></div><div className="flow-arrow">→</div>
           <div className="flow-node featured"><span>02</span><b>PlayWorldEngine</b><small>Live session · timed actions · capture</small></div><div className="flow-loop"><strong>PLAYER</strong><i>↕</i><small>adaptive decisions</small></div>
@@ -87,14 +83,14 @@ export default function Home() {
 
       <section className="section paper-evidence" id="paper">
         <div className="section-kicker">04 / FROM THE PAPER</div>
-        <div className="section-head"><h2>Grounded in real trajectories,<br/>not illustrative stand-ins.</h2><p>Selected figures from the paper show the benchmark design, data construction, and representative failure evidence. Only three are included here to keep the story focused.</p></div>
+        <div className="section-head"><h2>Selected paper figures.</h2><p>Benchmark design, data construction, and qualitative results.</p></div>
         <figure className="paper-hero"><img src="/figures/paper-teaser.jpg" alt="PlayWorld paper overview showing four evaluation families, the player-guided engine, and model ranking snapshots"/><figcaption>Paper overview: what PlayWorld evaluates, how the adaptive player controls rollouts, and the resulting capability rankings.</figcaption></figure>
         <div className="paper-pair">
           <figure><img src="/figures/paper-data-construction.jpg" alt="PlayWorld dataset construction pipeline from initial world settings through objectives, actions, and structured VQA questions"/><figcaption>Data construction pipeline: real starting worlds, long-horizon objectives, executable controls, and structured VQA.</figcaption></figure>
           <figure><img src="/figures/paper-qualitative.jpg" alt="Qualitative PlayWorld failure cases across interaction, geometry, insight, and out-of-sight evolution"/><figcaption>Qualitative evidence: localized failures in interaction, geometry, visible evolution, and hidden-state evolution.</figcaption></figure>
         </div>
         <div className="paper-table-wrap">
-          <div><small>BENCHMARK COMPOSITION</small><h3>Four task families, four distinct temporal demands.</h3><p>The split follows the paper taxonomy; Insight and Out-of-sight Evolution are evaluated separately rather than merged into one generic evolution score.</p></div>
+          <div><small>BENCHMARK COMPOSITION</small><h3>171 cases across four task families.</h3><p>Insight and Out-of-sight Evolution are evaluated separately.</p></div>
           <table><thead><tr><th>Task family</th><th>Cases</th><th>Primary temporal test</th></tr></thead><tbody>
             <tr><td><span className="dot cyan-dot"/>Geometry Consistency</td><td>48</td><td>Revisit and loop closure</td></tr>
             <tr><td><span className="dot coral-dot"/>Interaction Fidelity</td><td>50</td><td>Approach, contact, response</td></tr>
@@ -106,7 +102,7 @@ export default function Home() {
 
       <section className="section demos" id="demos">
         <div className="section-kicker">05 / CURATED MODEL ROLLOUTS</div>
-        <div className="section-head"><h2>One long-horizon case.<br/>Every evaluated model.</h2><p>Nine representative rollouts, each longer than 30 seconds. Switch models without leaving the trajectory.</p></div>
+        <div className="section-head"><h2>Model demos.</h2><p>One representative rollout over 30 seconds for each model.</p></div>
         <div className="demo-shell">
           <div className="video-wrap">
             <video key={active.src} controls playsInline preload="metadata" poster={active.poster} onEnded={() => step(1)}><source src={active.src} type="video/mp4"/>Your browser does not support video playback.</video>
@@ -124,13 +120,22 @@ export default function Home() {
       </section>
 
       <section className="section findings" id="findings">
-        <div className="section-kicker light">06 / WHAT WE FIND</div>
-        <div className="section-head light-head"><h2>Capability must be read<br/>one family at a time.</h2><p>The paper reports separate rankings for Geometry, Interaction, Insight Evolution, and Out-of-sight Evolution.</p></div>
-        <div className="finding-grid">{findings.map((item,index)=><article className={`finding ${item.color}`} key={item.title}><span>0{index+1}</span><h3>{item.title}</h3><p>{item.note}</p><div><small>PAPER SNAPSHOT LEADER</small><b>{item.leader}</b><strong>01</strong></div></article>)}</div>
-        <p className="fineprint">Ranking labels reproduce the current paper overview snapshot and should be updated together with the final paper results.</p>
+        <div className="section-kicker light">06 / LEADERBOARD</div>
+        <div className="section-head light-head"><h2>Model ranking.</h2><p>Select one capability to view its ranking.</p></div>
+        <div className="leaderboard-panel">
+          <label htmlFor="ranking-family">Ranking metric</label>
+          <select id="ranking-family" value={rankingFamily} onChange={(event) => setRankingFamily(event.target.value as RankingFamily)}>
+            {rankingFamilies.map((family) => <option key={family} value={family}>{family}</option>)}
+          </select>
+          <div className="ranking-table-wrap">
+            <table className="ranking-table"><thead><tr><th>Rank</th><th>Model</th><th>Capability</th></tr></thead><tbody>
+              {rankings[rankingFamily].map((model, index) => <tr key={model}><td>{index + 1}</td><td>{model}</td><td>{rankingFamily}</td></tr>)}
+            </tbody></table>
+          </div>
+        </div>
+        <p className="fineprint">Ranking reproduced from the current paper overview figure. Rank 5 in Out-of-sight Evolution is tied.</p>
       </section>
 
-      <section className="closing"><div><span>PLAY THE WORLD. TEST THE WORLD.</span><h2>From plausible pixels<br/>to persistent worlds.</h2></div><a href="#top">Back to top ↑</a></section>
       <footer><a className="brand" href="#top"><span className="brand-mark">P</span><span>PlayWorld</span></a><p>Player-guided evaluation for interactive world models.</p><span>Research preview · 2026</span></footer>
     </main>
   );
