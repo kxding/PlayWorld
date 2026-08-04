@@ -12,14 +12,14 @@ export async function generateMetadata(): Promise<Metadata> {
   const protocol = requestHeaders.get("x-forwarded-proto") ?? (host.startsWith("localhost") ? "http" : "https");
   const origin = `${protocol}://${host}`;
   const title = "PlayWorld — Player-Guided Evaluation for Interactive World Models";
-  const description = "PlayWorld evaluates geometry consistency, interaction fidelity, and state evolution across long-horizon interactive world-model rollouts.";
+  const description = "PlayWorld evaluates Geometry Consistency, Interaction Fidelity, Insight Evolution, and Out-of-sight Evolution across long-horizon interactive world-model rollouts.";
   return {
     metadataBase: new URL(origin),
     title,
     description,
     icons: { icon: "/favicon.svg", shortcut: "/favicon.svg" },
-    openGraph: { title, description, type: "website", images: [{ url: `${origin}/og.png`, width: 1731, height: 909, alt: "PlayWorld — Persistent worlds, tested through play." }] },
-    twitter: { card: "summary_large_image", title, description, images: [`${origin}/og.png`] },
+    openGraph: { title, description, type: "website", images: [{ url: `${origin}/og.jpg`, width: 2200, height: 1640, alt: "PlayWorld paper overview with four evaluation families." }] },
+    twitter: { card: "summary_large_image", title, description, images: [`${origin}/og.jpg`] },
   };
 }
 

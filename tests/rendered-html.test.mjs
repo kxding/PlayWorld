@@ -17,6 +17,10 @@ test("server-renders the PlayWorld project page", async () => {
   assert.match(html, /<title>PlayWorld/);
   assert.match(html, /Can a generated world/);
   assert.match(html, /One long-horizon case/);
-  assert.match(html, new RegExp("/og\\.png"));
+  assert.match(html, /Geometry Consistency/);
+  assert.match(html, /Interaction Fidelity/);
+  assert.match(html, /Insight Evolution/);
+  assert.match(html, /Out-of-sight Evolution/);
+  assert.match(html, new RegExp("/og\\.jpg"));
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape/);
 });
