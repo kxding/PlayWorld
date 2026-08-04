@@ -35,6 +35,42 @@ const benchmarkRows = [
   ["PlayWorld (Ours)", "Text + Image + Objective", "yes", "yes", "yes", "10–60 s", "yes", "yes", "yes"],
 ] as const;
 
+const vqaRows = [
+  ["Web", "Genie3", "2.74", "2.40", "1.51", "1.81", "2.12"],
+  ["Web", "LingBot-World", "2.11", "2.23", "1.33", "1.43", "1.78"],
+  ["Web", "LingBot-World2", "2.04", "2.13", "1.95", "1.16", "1.82"],
+  ["Web", "HY-World2", "2.14", "2.06", "1.13", "1.09", "1.61"],
+  ["Web", "HappyOyster", "2.54", "2.15", "1.47", "1.54", "1.92"],
+  ["Local", "SANA-WM", "1.72", "1.89", "1.13", "1.16", "1.48"],
+  ["Local", "Hunyuan-GameCraft-2", "1.62", "1.52", "1.21", "1.31", "1.42"],
+  ["Local", "HY-WorldPlay", "1.12", "1.63", "1.01", "1.08", "1.21"],
+  ["Local", "Matrix-Game-3.0", "1.30", "1.25", "1.00", "1.00", "1.14"],
+] as const;
+
+const videoQualityRows = [
+  ["Web", "Genie3", "0.520", "0.752", "0.990", "0.978", "0.986", "0.845"],
+  ["Web", "LingBot-World", "0.511", "0.720", "0.980", "0.963", "0.980", "0.831"],
+  ["Web", "LingBot-World2", "0.515", "0.740", "0.978", "0.956", "0.969", "0.832"],
+  ["Web", "HY-World2", "0.474", "0.678", "0.991", "0.995", "0.912", "0.810"],
+  ["Web", "HappyOyster", "0.497", "0.737", "0.995", "0.990", "0.995", "0.843"],
+  ["Local", "SANA-WM", "0.518", "0.726", "0.989", "0.965", "0.982", "0.836"],
+  ["Local", "Hunyuan-GameCraft-2", "0.501", "0.678", "0.983", "0.952", "0.980", "0.816"],
+  ["Local", "HY-WorldPlay", "0.477", "0.615", "0.989", "0.952", "0.955", "0.798"],
+  ["Local", "Matrix-Game-3.0", "0.441", "0.660", "0.989", "0.969", "0.952", "0.802"],
+] as const;
+
+const memoryRows = [
+  ["Web", "Genie3", "0.887", "0.856", "0.298", "44.28"],
+  ["Web", "LingBot-World", "0.922", "0.835", "0.269", "45.45"],
+  ["Web", "LingBot-World2", "0.914", "0.823", "0.279", "48.87"],
+  ["Web", "HY-World2", "0.907", "0.898", "0.346", "50.24"],
+  ["Web", "HappyOyster", "0.918", "0.884", "0.305", "44.40"],
+  ["Local", "SANA-WM", "0.844", "0.859", "0.163", "46.19"],
+  ["Local", "Hunyuan-GameCraft-2", "0.904", "0.837", "0.150", "64.90"],
+  ["Local", "HY-WorldPlay", "0.910", "0.874", "0.180", "47.52"],
+  ["Local", "Matrix-Game-3.0", "0.873", "0.657", "0.335", "63.72"],
+] as const;
+
 const statusMark = (value: "yes" | "no" | "partial") => value === "yes" ? "✓" : value === "no" ? "✕" : "~";
 
 export default function Home() {
@@ -134,6 +170,37 @@ export default function Home() {
           </div>
         </div>
         <p className="fineprint">Ranking reproduced from the current paper overview figure. Rank 5 in Out-of-sight Evolution is tied.</p>
+        <div className="result-tables">
+          <article className="result-table-card">
+            <div className="result-table-head"><span>TABLE 2</span><h3>VQA-based evaluation</h3><p>Scores range from 1 to 5. Overall is the unweighted mean of the four dimensions.</p></div>
+            <div className="result-table-scroll">
+              <table className="result-table">
+                <thead><tr><th>Setting</th><th>Model</th><th className="group-geometry">Geometry consistency ↑</th><th className="group-interaction">Interaction fidelity ↑</th><th className="group-insight">Insight evolution ↑</th><th className="group-oos">Out-of-sight evolution ↑</th><th>Overall ↑</th></tr></thead>
+                <tbody>{vqaRows.map((row) => <tr key={row[1]}>{row.map((cell, index) => <td key={index}>{index === 0 ? <span className={`setting-badge ${cell.toLowerCase()}`}>{cell}</span> : cell}</td>)}</tr>)}</tbody>
+              </table>
+            </div>
+          </article>
+
+          <article className="result-table-card">
+            <div className="result-table-head"><span>TABLE 3 · A</span><h3>Basic video quality</h3><p>Five normalized components and their mean. Higher is better.</p></div>
+            <div className="result-table-scroll">
+              <table className="result-table compact-results">
+                <thead><tr><th>Setting</th><th>Model</th><th>Aes. ↑</th><th>Img. ↑</th><th>Mot. ↑</th><th>Flick. ↑</th><th>Temp. ↑</th><th>Avg. ↑</th></tr></thead>
+                <tbody>{videoQualityRows.map((row) => <tr key={row[1]}>{row.map((cell, index) => <td key={index}>{index === 0 ? <span className={`setting-badge ${cell.toLowerCase()}`}>{cell}</span> : cell}</td>)}</tr>)}</tbody>
+              </table>
+            </div>
+          </article>
+
+          <article className="result-table-card">
+            <div className="result-table-head"><span>TABLE 3 · B</span><h3>Memory consistency and action alignment</h3><p>Higher is better for Geo3D and DSCctx; lower is better for translation and rotation error.</p></div>
+            <div className="result-table-scroll">
+              <table className="result-table compact-results">
+                <thead><tr><th>Setting</th><th>Model</th><th className="group-memory">Geo3D ↑</th><th className="group-memory">DSCctx ↑</th><th className="group-action">Translation error ↓</th><th className="group-action">Rotation error (°) ↓</th></tr></thead>
+                <tbody>{memoryRows.map((row) => <tr key={row[1]}>{row.map((cell, index) => <td key={index}>{index === 0 ? <span className={`setting-badge ${cell.toLowerCase()}`}>{cell}</span> : cell}</td>)}</tr>)}</tbody>
+              </table>
+            </div>
+          </article>
+        </div>
       </section>
 
       <footer><a className="brand" href="#top"><span className="brand-mark">P</span><span>PlayWorld</span></a><p>Player-guided evaluation for interactive world models.</p><span>Research preview · 2026</span></footer>

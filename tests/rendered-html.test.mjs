@@ -28,6 +28,12 @@ test("server-renders the PlayWorld project page", async () => {
   assert.match(html, /<table class="benchmark-table">/);
   assert.doesNotMatch(html, /Selected paper figures/);
   assert.doesNotMatch(html, /table1-latest\.jpg/);
+  assert.match(html, /TABLE 2/);
+  assert.match(html, /VQA-based evaluation/);
+  assert.match(html, /TABLE 3 · A/);
+  assert.match(html, /Basic video quality/);
+  assert.match(html, /TABLE 3 · B/);
+  assert.match(html, /Memory consistency and action alignment/);
   assert.match(html, new RegExp("/og\\.jpg"));
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape/);
 });
