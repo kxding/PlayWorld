@@ -84,31 +84,30 @@ export default function Home() {
       <nav className="nav" aria-label="Main navigation">
         <a className="brand" href="#top"><span className="brand-mark">P</span><span>PlayWorld</span></a>
         <div className="nav-links">
-          <a href="#overview">Overview</a><a href="#method">Method</a><a href="#suite">Pipeline</a><a href="#demos">Demos</a><a href="#findings">Leaderboard</a>
+          <a href="#top">Overview</a><a href="#method">Method</a><a href="#suite">Pipeline</a><a href="#demos">Demos</a><a href="#findings">Leaderboard</a>
         </div>
         <a className="nav-cta" href="#demos">Demos</a>
       </nav>
 
       <section className="hero" id="top">
-        <div className="eyebrow">PLAYER-GUIDED EVALUATION FOR INTERACTIVE WORLD MODELS</div>
-        <h1>PlayWorld</h1>
-        <p className="hero-subtitle">Evaluating whether generated worlds remain consistent, interactive, and temporally coherent over long rollouts.</p>
-        <div className="hero-actions"><a className="button primary" href="#demos">View model demos</a><a className="button ghost" href="#suite">Pipeline</a></div>
-        <div className="metric-row">
-          <div><strong>171</strong><span>benchmark cases</span></div>
-          <div><strong>1,417</strong><span>interactive videos</span></div>
-          <div><strong>30–60s</strong><span>long-horizon rollouts</span></div>
-          <div><strong>4</strong><span>diagnostic task families</span></div>
+        <div className="hero-media" aria-hidden="true">
+          <div className="hero-video-panel"><video autoPlay muted loop playsInline preload="metadata" poster="/posters/genie3-gc004.jpg"><source src="/demos/genie3-gc004.mp4" type="video/mp4"/></video><span>GENIE 3 · GC004</span></div>
+          <div className="hero-video-panel"><video autoPlay muted loop playsInline preload="metadata" poster="/posters/happyoyster-gc016.jpg"><source src="/demos/happyoyster-gc016.mp4" type="video/mp4"/></video><span>HAPPYOYSTER · GC016</span></div>
+        </div>
+        <div className="hero-shade"/>
+        <div className="hero-content">
+          <div className="eyebrow">PLAYER-GUIDED EVALUATION FOR INTERACTIVE WORLD MODELS</div>
+          <h1>PlayWorld</h1>
+          <p className="hero-subtitle">A long-horizon benchmark for whether generated worlds remain consistent, interactive, and temporally coherent across complete trajectories—not only isolated frames.</p>
+          <div className="hero-stats" aria-label="Benchmark summary">
+            <div><strong>171</strong><span>Cases</span></div><div><strong>1,417</strong><span>Videos</span></div><div><strong>30–60s</strong><span>Rollouts</span></div><div><strong>4</strong><span>Task families</span></div>
+          </div>
+          <div className="hero-actions"><a className="button primary" href="#demos">View model demos</a><a className="button ghost" href="#suite">Pipeline</a></div>
         </div>
       </section>
 
-      <section className="section intro" id="overview">
-        <div className="section-kicker">01 / THE QUESTION</div>
-        <div className="intro-grid"><h2>Long-horizon world model evaluation.</h2><div><p>PlayWorld evaluates complete interactive trajectories instead of isolated frames or endpoints.</p><p>The benchmark tests state persistence, physical response, visible evolution, and hidden-state progression.</p></div></div>
-      </section>
-
       <section className="section method" id="method">
-        <div className="section-kicker light">02 / WHAT WE EVALUATE</div>
+        <div className="section-kicker light">01 / WHAT WE EVALUATE</div>
         <div className="section-head light-head"><h2>Four evaluation families.</h2><p>Each family targets a distinct temporal capability.</p></div>
         <div className="pillar-grid">
           <article className="pillar cyan"><span className="pillar-number">01</span><div className="pillar-symbol">⌁</div><h3>Geometry<br/>Consistency</h3><p>Does the same world survive motion and revisit?</p><ul><li>Identity & object count</li><li>Material & color stability</li><li>Relative 3D layout</li><li>Closed-loop return views</li></ul><b>48 cases · GC</b></article>
@@ -119,7 +118,7 @@ export default function Home() {
       </section>
 
       <section className="section engine">
-        <div className="section-kicker">03 / PIPELINE</div>
+        <div className="section-kicker">02 / PIPELINE</div>
         <div className="section-head"><h2>Pipeline.</h2></div>
         <div className="pipeline-figures" id="suite">
           <figure><img src="/figures/fig1-overview-latest.jpg" alt="Figure 1 overview of the PlayWorld evaluation pipeline, four task families, and model rankings"/><figcaption>Figure 1. Overview of PlayWorld.</figcaption></figure>
@@ -137,7 +136,7 @@ export default function Home() {
       </section>
 
       <section className="section demos" id="demos">
-        <div className="section-kicker">04 / CURATED MODEL ROLLOUTS</div>
+        <div className="section-kicker">03 / CURATED MODEL ROLLOUTS</div>
         <div className="section-head"><h2>Model demos.</h2><p>One representative rollout over 30 seconds for each model.</p></div>
         <div className="demo-shell">
           <div className="video-wrap">
@@ -156,7 +155,7 @@ export default function Home() {
       </section>
 
       <section className="section findings" id="findings">
-        <div className="section-kicker light">05 / LEADERBOARD</div>
+        <div className="section-kicker light">04 / LEADERBOARD</div>
         <div className="section-head light-head"><h2>Model ranking.</h2><p>Select one capability to view its ranking.</p></div>
         <div className="leaderboard-panel">
           <label htmlFor="ranking-family">Ranking metric</label>

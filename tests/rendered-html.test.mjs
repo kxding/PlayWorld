@@ -16,6 +16,9 @@ test("server-renders the PlayWorld project page", async () => {
   const html = await response.text();
   assert.match(html, /<title>PlayWorld/);
   assert.match(html, /<h1>PlayWorld<\/h1>/);
+  assert.match(html, /genie3-gc004\.mp4/);
+  assert.match(html, /happyoyster-gc016\.mp4/);
+  assert.doesNotMatch(html, /01 \/ THE QUESTION/);
   assert.match(html, /Model demos/);
   assert.match(html, /Geometry Consistency/);
   assert.match(html, /Interaction Fidelity/);
