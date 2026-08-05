@@ -79,8 +79,11 @@ playworld_code/
 │   │   ├── dual_sampling.py
 │   │   ├── gemini_metrics.py
 │   │   ├── instruction_gate.py
+│   │   ├── memory_metrics.py    # no-GT Geo3D and DSC_ctx
+│   │   ├── vbench_adapter.py    # official VBench custom-input adapter
 │   │   └── oe_split_averages.py
 │   └── cli/
+│       ├── automatic.py
 │       ├── evaluate.py
 │       └── aggregate.py
 ├── configs/decisions.example.json
@@ -104,6 +107,19 @@ python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install -e .
 export DATA_SUITE=/absolute/path/to/datasuite
+```
+
+Install heavy automatic-metric dependencies only when needed:
+
+```bash
+# No-GT Geo3D and DSC_ctx
+python -m pip install -e '.[automatic]'
+
+# Official VBench custom-input adapter
+python -m pip install -e '.[vbench]'
+
+# Both optional backends
+python -m pip install -e '.[all-metrics]'
 ```
 
 The supplied macOS launcher attaches to Google Chrome over CDP. If Chrome is in
@@ -400,9 +416,15 @@ page adapter.
 
 ### Automatic metrics included in this release
 
-The public evaluator is an automatic Gemini VLM-as-a-judge pipeline. Given a
-task record, its reference image when applicable, and a generated video, the
-code automatically produces the following measurements and final table:
+The repository provides two complementary metric families:
+
+1. The canonical automatic Gemini VLM-as-a-judge pipeline used to produce the
+   published PlayWorld table.
+2. Optional programmatic metrics using the official VBench custom-input API and
+   the local no-GT Geo3D/DSC_ctx protocol.
+
+Given a task record, its reference image when applicable, and a generated
+video, the Gemini pipeline automatically produces these measurements:
 
 | Stage | Automatic measurement | Output |
 | --- | --- | --- |
@@ -421,21 +443,23 @@ All scripts used to compute these metrics are included in this repository:
 | Trajectory-only instruction gate | [`playworldbench/metrics/instruction_gate.py`](playworldbench/metrics/instruction_gate.py) |
 | Fail=1 normalization and fixed OE split | [`playworldbench/metrics/oe_split_averages.py`](playworldbench/metrics/oe_split_averages.py) |
 | Table aggregation CLI | [`playworldbench/cli/aggregate.py`](playworldbench/cli/aggregate.py) |
-| Metric regression tests | [`tests/test_metrics.py`](tests/test_metrics.py) |
+| Official VBench custom-input adapter | [`playworldbench/metrics/vbench_adapter.py`](playworldbench/metrics/vbench_adapter.py) |
+| No-GT Geo3D and DSC_ctx | [`playworldbench/metrics/memory_metrics.py`](playworldbench/metrics/memory_metrics.py) |
+| Unified non-Gemini automatic CLI | [`playworldbench/cli/automatic.py`](playworldbench/cli/automatic.py) |
+| Metric regression tests | [`tests/test_metrics.py`](tests/test_metrics.py), [`tests/test_automatic_metrics.py`](tests/test_automatic_metrics.py) |
 
-Installing the package registers `playworld-eval` and
-`playworld-aggregate` as the two executable metric commands. The Python files
-above are the complete implementations behind those commands, not placeholders.
+Installing the package registers `playworld-eval`, `playworld-aggregate`, and
+`playworld-auto-metrics`. The Python files above are the complete
+implementations behind those commands, not placeholders.
 
 Only categories marked applicable in each task record enter its weighted quality
 average. `task_specific`, `applicable=false`, and zero-weight questions are
 excluded. For GC aggregation, `identity_id` has weight 2. The exact group and
 failure policies are listed in [Exact table policy](#exact-table-policy).
 
-In this release, **automatic metrics** means the reproducible Gemini evaluation
-implemented in `playworldbench/metrics/`. VBench, FVD, LPIPS, SSIM, and other
-separate metric suites are not silently computed and are not included in the
-reported table.
+The optional VBench and no-GT results are reported separately. They do not
+silently alter the canonical Gemini average, and FVD, LPIPS, or SSIM are not
+claimed unless a future implementation explicitly computes them.
 
 ### Automatic evaluation pipeline
 
@@ -452,6 +476,52 @@ reported table.
 
 The commands below can evaluate one video at a time and then reproduce the full
 benchmark table.
+
+### Programmatic automatic metrics (without Gemini)
+
+The VBench adapter calls the installed official
+[Vchitect/VBench](https://github.com/Vchitect/VBench) implementation rather
+than copying third-party metric code. In custom-input mode it exposes the six
+dimensions officially documented for arbitrary videos:
+
+```text
+subject_consistency, background_consistency, motion_smoothness,
+dynamic_degree, aesthetic_quality, imaging_quality
+```
+
+Download `VBench_full_info.json` following the VBench instructions, then run:
+
+```bash
+playworld-auto-metrics vbench \
+  --video /external/videos/GC001.mp4 \
+  --full-info /external/vbench/VBench_full_info.json \
+  --metrics subject_consistency background_consistency \
+            motion_smoothness dynamic_degree \
+            aesthetic_quality imaging_quality \
+  --device cuda \
+  --output-dir outputs/vbench/GC001 \
+  --output outputs/GC001_vbench.json
+```
+
+The local no-GT memory backend supplies two additional diagnostics:
+
+- `geo3d`: Depth Anything V2 consistency inside fixed early and late windows.
+- `dsc_ctx`: YOLO dynamic-subject detection followed by early/late CLIP crop
+  similarity. If no comparable subject exists, the metric returns N/A instead
+  of zero.
+
+```bash
+playworld-auto-metrics memory \
+  --video /external/videos/GC001.mp4 \
+  --metrics geo3d dsc_ctx \
+  --device cuda \
+  --output outputs/GC001_memory_metrics.json
+```
+
+Both modes support `--dry-run`, which validates and writes the execution plan
+without decoding video, loading metric models, or calling Gemini. Formulas,
+sampling positions, limitations, and N/A handling are documented in
+[`docs/AUTOMATIC_METRICS.md`](docs/AUTOMATIC_METRICS.md).
 
 ### Benchmark data and media are not included
 
