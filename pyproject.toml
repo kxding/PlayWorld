@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "playworldbench"
+version = "0.1.0"
+description = "Gemini metrics and browser-agent control for PlayWorld"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "google-genai>=1.0.0",
+  "Pillow>=10.0.0",
+  "playwright>=1.40.0",
+]
+
+[project.optional-dependencies]
+dev = ["build>=1.2", "pytest>=8.0"]
+
+[project.scripts]
+playworld-eval = "playworldbench.cli.evaluate:main"
+playworld-aggregate = "playworldbench.cli.aggregate:main"
+playworld-agent = "playworldbench.agent_cli:main"
+
+[tool.setuptools.packages.find]
+include = ["playworldbench*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

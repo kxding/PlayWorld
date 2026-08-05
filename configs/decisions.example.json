@@ -1,0 +1,23 @@
+{
+  "0": {
+    "operation": "keep_action",
+    "reason": "follow the benchmark plan"
+  },
+  "1": {
+    "operation": "extend_action",
+    "reason": "the camera has not moved far enough",
+    "extension_ms": 500
+  },
+  "2": {
+    "operation": "correct_action",
+    "reason": "turn left instead of continuing forward",
+    "corrected_action": {
+      "key": "A",
+      "duration_ms": 750
+    }
+  },
+  "3": {
+    "operation": "stop_action",
+    "reason": "the requested view has been reached"
+  }
+}
