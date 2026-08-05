@@ -1,0 +1,13 @@
+.DS_Store
+.env
+.venv/
+build/
+dist/
+*.egg-info/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+runs/
+outputs/
+datasuite/
+data/
