@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import shutil
 import subprocess
+import time
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -103,23 +104,28 @@ def extract_frames(video: Path, output_dir: Path, spec: SamplingSpec) -> tuple[P
         f"scale={spec.cell_width}:{spec.cell_height}:force_original_aspect_ratio=decrease,"
         f"pad={spec.cell_width}:{spec.cell_height}:(ow-iw)/2:(oh-ih)/2:color=black"
     )
-    subprocess.run(
-        [
-            "ffmpeg",
-            "-hide_banner",
-            "-loglevel",
-            "error",
-            "-y",
-            "-i",
-            str(video),
-            "-vf",
-            scale_and_pad,
-            "-q:v",
-            "2",
-            str(frame_pattern),
-        ],
-        check=True,
-    )
+    command = [
+        "ffmpeg",
+        "-hide_banner",
+        "-loglevel",
+        "error",
+        "-y",
+        "-i",
+        str(video),
+        "-vf",
+        scale_and_pad,
+        "-q:v",
+        "2",
+        str(frame_pattern),
+    ]
+    for attempt in range(1, 6):
+        try:
+            subprocess.run(command, check=True)
+            break
+        except subprocess.CalledProcessError:
+            if attempt == 5:
+                raise
+            time.sleep(min(30, attempt * 5))
     frames = tuple(sorted(output_dir.glob("frame_*.jpg")))
     if not frames:
         raise RuntimeError(f"No {spec.name} frames were extracted from {video}")
