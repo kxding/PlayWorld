@@ -11,3 +11,26 @@ runs/
 outputs/
 datasuite/
 data/
+
+# External benchmark assets and generated results stay out of the code repo.
+final-result/
+benchmark_images/
+benchmark_videos/
+images_GC/
+images_IF/
+images_OE/
+videos/
+GC*.jpg
+GC*.jpeg
+GC*.png
+IF*.jpg
+IF*.jpeg
+IF*.png
+OE*.jpg
+OE*.jpeg
+OE*.png
+*.mp4
+*.mov
+*.avi
+*.mkv
+*.webm

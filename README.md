@@ -396,9 +396,63 @@ Use `GeminiPolicy(task["prompt"], task_context=task)` in place of
 exported as the canonical base-class name for implementing another world-model
 page adapter.
 
-## Gemini video metrics
+## Metrics evaluation
 
-### 1. Generate a raw 1–5 score
+### Automatic metrics included in this release
+
+The public evaluator is an automatic Gemini VLM-as-a-judge pipeline. Given a
+task record, its reference image when applicable, and a generated video, the
+code automatically produces the following measurements and final table:
+
+| Stage | Automatic measurement | Output |
+| --- | --- | --- |
+| Video quality | Applicable 1–5 categories such as identity, background consistency, motion/trajectory, contact/support, collision/boundary, causal response, spatial consistency, and evolution quality | Raw category scores and `final_score_1_to_5` |
+| Instruction following | Trajectory-only Pass/Partial/Fail gate for GC, third-person IF, and out-of-sight OE | Verdict and binary instruction-following score |
+| Failure normalization | Preserve the raw quality score for Pass/Partial and replace Fail with 1 where the gate applies; missing videos also contribute 1 | Normalized per-video score |
+| Benchmark aggregation | Split OE into the fixed 30 In-sight and 43 Out-of-sight tasks, then average GC, IF, In-sight, and Out-of-sight with equal group weight | `Gemini score averages · Fail = 1 · OE split` Markdown/JSON table |
+
+Only categories marked applicable in each task record enter its weighted quality
+average. `task_specific`, `applicable=false`, and zero-weight questions are
+excluded. For GC aggregation, `identity_id` has weight 2. The exact group and
+failure policies are listed in [Exact table policy](#exact-table-policy).
+
+In this release, **automatic metrics** means the reproducible Gemini evaluation
+implemented in `playworldbench/metrics/`. VBench, FVD, LPIPS, SSIM, and other
+separate metric suites are not silently computed and are not included in the
+reported table.
+
+### Automatic evaluation pipeline
+
+1. Read the task metadata and generated-video path.
+2. Decode the complete video into the Primary and Detail evidence streams
+   specified in [Sampling sent to Gemini](#sampling-sent-to-gemini).
+3. Send the reference image (score mode only), both chronological evidence
+   streams, the structured task context, and the canonical scoring prompt to
+   Gemini.
+4. Save the raw JSON response and update the score cache.
+5. Run the applicable instruction-following gate. GC gate mode intentionally
+   excludes the reference image and judges only the observed action trajectory.
+6. Aggregate all cached results with the Fail=1 and fixed OE-split policy.
+
+The commands below can evaluate one video at a time and then reproduce the full
+benchmark table.
+
+### Benchmark data and media are not included
+
+This GitHub repository is code-only. Benchmark reference images, task JSON, and
+other datasuite assets remain in the separate Hugging Face datasuite. Generated
+benchmark videos remain in local or external storage. They are supplied to the
+CLI using `--reference-image`, `--video`, `--dataset`, and
+`--datasuite-root`; the evaluator does not require media to be copied into this
+repository.
+
+The repository contains no tracked benchmark images or videos. `.gitignore`
+also excludes datasuite/data/result directories, GC/IF/OE benchmark-image
+filenames, and common video formats to prevent accidental media uploads.
+
+### Gemini automatic video score
+
+#### 1. Generate a raw 1–5 score
 
 Run a dry-run first to verify video decoding, both sampling streams, the exact
 prompt, and the serialized context without calling Gemini:
@@ -434,7 +488,7 @@ The score prompt itself emits the third-person IF and out-of-sight OE
 instruction-following checks used by the table. First-person IF and In-sight OE
 are marked not applicable for that gate.
 
-### 2. Generate the GC trajectory gate
+#### 2. Generate the GC trajectory gate
 
 GC uses a separate action-trajectory-only judgment. It must not compare scene
 identity, background appearance, or returned visual content.
@@ -456,7 +510,7 @@ playworld-eval --mode gate \
 map to 1; Fail maps to 0 before the table converts Fail to a final contribution
 of 1.
 
-### 3. Aggregate the OE-split table
+#### 3. Aggregate the OE-split table
 
 The video manifest is a JSON array. Each record must provide at least:
 
