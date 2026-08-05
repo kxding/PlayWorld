@@ -24,6 +24,8 @@ test("server-renders the PlayWorld project page", async () => {
   assert.doesNotMatch(html, /href="#suite"|id="suite"/);
   assert.match(html, /hero-mosaic\/genie-gc004\.mp4/);
   assert.match(html, /hero-mosaic\/happyoyster-gc016\.mp4/);
+  assert.match(html, /hero-mosaic\/genie-if043\.mp4/);
+  assert.match(html, /hero-mosaic\/happyoyster-oe070\.mp4/);
   assert.equal((html.match(/hero-mosaic\//g) ?? []).length, 40);
   assert.doesNotMatch(html, /01 \/ THE QUESTION/);
   assert.match(html, /Model demos/);

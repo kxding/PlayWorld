@@ -14,8 +14,8 @@ const demos = [
   { model: "Matrix-Game 3", org: "Skywork AI", caseId: "OE030", family: "Out-of-sight Evolution", duration: "33.5s", src: "/demos/matrixgame3-oe030.mp4", poster: "/posters/matrixgame3-oe030.jpg", prompt: "Follow the silver SUV down the spiral ramp, then tilt back up." },
 ];
 
-const heroModels = ["genie", "happyoyster", "hyworld2", "lingbotworld-va2", "gamecraft2", "sana-wm", "hy-worldplay", "matrixgame3-native"] as const;
-const heroCases = ["gc004", "gc016", "if008", "if030", "oe005"] as const;
+const heroModels = ["genie", "happyoyster"] as const;
+const heroCases = ["gc004", "gc008", "gc016", "gc019", "gc037", "if008", "if030", "if032", "if037", "if043", "oe001", "oe005", "oe010", "oe011", "oe027", "oe030", "oe033", "oe034", "oe036", "oe070"] as const;
 const heroVideos = heroCases.flatMap((caseId) => heroModels.map((model) => ({ model, caseId, src: `/hero-mosaic/${model}-${caseId}.mp4` })));
 
 const rankingFamilies = ["Overall", "Geometry Consistency", "Interaction Fidelity", "Insight Evolution", "Out-of-sight Evolution"] as const;
