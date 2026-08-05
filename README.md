@@ -130,19 +130,85 @@ shell `curl` command. Credentials and headers are not accepted in task JSON,
 prompts, contexts, or output artifacts. `.env` is ignored by Git, and the code
 does not load it automatically.
 
-## HappyOyster / Agent control
+## Agent Control (HappyOyster example)
 
-### 1. Start a CDP-enabled browser
+`PlayWorldEngine` is the public control interface used by PlayWorldBench. It is
+not a fork of the Playwright package: Playwright remains the internal browser
+driver, while `PlayWorldEngine` provides world-model operations such as image
+upload, world generation, observation, keyboard control, recovery, and safe key
+release. `HappyOysterEngine` is the HappyOyster page adapter for that interface.
+
+For every planned benchmark action, the harness takes a screenshot, asks the
+selected Agent policy for a decision, executes the resolved action, takes an
+after-action screenshot, and immediately records the event. The same harness can
+therefore run a fixed action trace or close the loop with a visual Agent.
+
+```text
+task JSON + reference image
+          |
+          v
+HappyOysterEngine: upload image -> submit prompt -> wait for world
+          |
+          v
+observe screenshot -> Agent decision -> execute/release keys -> record result
+          ^                                                      |
+          +--------------------- next planned action -------------+
+```
+
+### 1. Prepare one HappyOyster task
+
+The dataset file is a JSON array. A minimal task record is:
+
+```json
+[
+  {
+    "task_id": "GC001",
+    "prompt": "Move forward and turn left to inspect the scene.",
+    "image_path": "gc/images/GC001.jpg",
+    "action_sequence_steps": [
+      "hold(W,1000ms)",
+      "wait(500ms)",
+      "hold(A,750ms)"
+    ],
+    "image_caption": "A navigable outdoor scene",
+    "perspective": "first-person"
+  }
+]
+```
+
+Required fields are `task_id`, `prompt`, `image_path`, and
+`action_sequence_steps`. An action sequence may be a JSON list as above or one
+semicolon-separated string. Supported expressions are `hold(KEY,Nms)` and
+`wait(Nms)`. The controller accepts `W/A/S/D`, arrow keys, and `WAIT` for Agent
+corrections. `image_path` is resolved relative to `--datasuite-root`.
+
+Use the original suite IDs and filenames: for example, an IF record remains
+`IF001` and an OE record remains `OE001`; Agent Control does not convert them to
+GC IDs.
+
+### 2. Start Chrome and sign in to HappyOyster
 
 ```bash
 chmod +x scripts/*.sh
 scripts/launch_chrome_cdp.sh
 ```
 
-In that Chrome window, open HappyOyster and finish any required login. The
-harness attaches to this existing browser and deliberately does not close it.
+This starts a separate Chrome profile with the DevTools endpoint at
+`http://127.0.0.1:9222`. In that Chrome window:
 
-### 2. Run one task
+1. Open the HappyOyster web application.
+2. Complete login or any human verification.
+3. Leave the HappyOyster tab open.
+
+The harness attaches to this browser session. It does not launch an anonymous
+session and deliberately does not close the user's Chrome window when a run
+finishes. A different Chrome path, profile, or port can be supplied with
+`CHROME_BIN`, `PLAYWORLD_PROFILE_DIR`, and `CDP_PORT`.
+
+### 3. Verify browser control with the fixed benchmark plan
+
+Start with the `keep` policy. It uses every action from the dataset unchanged
+and does not call an Agent model:
 
 ```bash
 playworld-agent \
@@ -156,58 +222,174 @@ playworld-agent \
   --output-root runs/happyoyster
 ```
 
-Use the corresponding IF/OE JSON file and original ID for those suites, for
-example `--dataset "$DATA_SUITE/if/data.json" --task-id IF001`. Each record must
-provide `task_id`, `prompt`, `image_path`, and `action_sequence_steps` (a list
-such as `hold(W,1000ms)` and `wait(500ms)`). The image path is resolved relative
-to `--datasuite-root`.
+The HappyOyster adapter performs four page-level operations:
 
-Run several selected tasks by repeating `--task-id`, or run the entire JSON with
-`--all`. Add `--continue-on-error` for batch execution that should continue
-after a failed task.
+1. Find the file input and upload the task image.
+2. Fill the prompt field and click **Generate**.
+3. Wait up to five minutes for the interactive canvas.
+4. Focus the page and send timed keyboard actions.
 
-### 3. Choose the Agent decision interface
+The built-in adapter recognizes common English/Chinese Generate buttons and
+standard file, textarea, content-editable, and canvas elements. If a deployed
+HappyOyster page uses different controls, update only the selector tuples in
+`playworldbench/agent/happyoyster.py`; the harness and policies do not need to
+change.
 
-- `--policy keep`: execute the benchmark action sequence unchanged.
-- `--policy scripted --decisions-file configs/decisions.example.json`: exercise
-  all four operations deterministically.
-- `--policy gemini --gemini-model gemini-3.1-pro-preview`: let Gemini inspect
-  the current screenshot before every action and return one of the four control
-  operations.
+### 4. Enable screenshot-based Agent decisions
 
-The four decisions have stable semantics: `keep_action` keeps the planned key
-and duration, `stop_action` releases pressed keys and ends the sequence,
-`extend_action` adds milliseconds to the planned action, and `correct_action`
-replaces it with a validated key/duration pair.
+Set Gemini credentials through environment variables, then select the `gemini`
+policy:
+
+```bash
+export GEMINI_API_KEY="your_api_key"
+export GEMINI_MODEL="gemini-3.1-pro-preview"
+
+playworld-agent \
+  --engine happyoyster \
+  --url 'https://your-happyoyster-page.example' \
+  --cdp-url http://127.0.0.1:9222 \
+  --dataset "$DATA_SUITE/gc/data.json" \
+  --datasuite-root "$DATA_SUITE" \
+  --task-id GC001 \
+  --policy gemini \
+  --gemini-model "$GEMINI_MODEL" \
+  --max-extension-ms 5000 \
+  --output-root runs/happyoyster
+```
+
+Before each action, Gemini receives the current JPEG screenshot together with
+the task objective, scene metadata when present, planned action, and remaining
+base actions. It must return exactly one control operation:
+
+| Operation | Effect | Required fields |
+| --- | --- | --- |
+| `keep_action` | Execute the planned key and duration unchanged. | `operation`, optional `reason` |
+| `stop_action` | Release every pressed key and end the action sequence. | `operation`, optional `reason` |
+| `extend_action` | Add time to the planned action without changing its key. | Positive `extension_ms` |
+| `correct_action` | Replace the planned action with a validated action. | `corrected_action.key`, positive `corrected_action.duration_ms` |
+
+Example Agent response:
+
+```json
+{
+  "operation": "correct_action",
+  "reason": "The target is now to the left of the camera.",
+  "extension_ms": 0,
+  "corrected_action": {"key": "A", "duration_ms": 750}
+}
+```
+
+To test all four operations without making Gemini calls, use the supplied
+decision file:
+
+```bash
+playworld-agent \
+  --engine happyoyster \
+  --url 'https://your-happyoyster-page.example' \
+  --dataset "$DATA_SUITE/gc/data.json" \
+  --datasuite-root "$DATA_SUITE" \
+  --task-id GC001 \
+  --policy scripted \
+  --decisions-file configs/decisions.example.json \
+  --output-root runs/happyoyster-scripted
+```
+
+Unspecified indexes in a scripted decision file default to `keep_action`.
+
+### 5. Batch execution
+
+Repeat `--task-id` to select several tasks, or use `--all` for every record in
+the JSON file:
+
+```bash
+playworld-agent \
+  --engine happyoyster \
+  --url 'https://your-happyoyster-page.example' \
+  --dataset "$DATA_SUITE/oe/data.json" \
+  --datasuite-root "$DATA_SUITE" \
+  --all \
+  --policy gemini \
+  --continue-on-error \
+  --output-root runs/happyoyster-oe
+```
+
+`--continue-on-error` applies between tasks. A failed task is still fully
+recorded before the batch moves to the next one.
 
 ### Fault tolerance and result artifacts
 
 Connection, generation, observation, and policy calls have independently
-configurable retry counts. A browser recovery reconnects through CDP. An action
-that may have partially executed is never blindly retried; keys are released and
-the failure is recorded. If an Agent call fails, the default safe behavior is
-`stop_action`, configurable with `--policy-failure-fallback`.
+configurable retry counts (`--connect-attempts`, `--generation-attempts`,
+`--observation-attempts`, and `--policy-attempts`). Browser recovery reconnects
+through CDP. An action that may have partially executed is never blindly
+repeated: pressed keys are released, the failure is recorded, and that task
+stops. If an Agent call fails, the default safe decision is `stop_action`; use
+`--policy-failure-fallback keep` or `fail` only when that behavior is intended.
 
-Every task creates a timestamped folder under `--output-root` containing:
+Every task creates a timestamped folder under `--output-root`:
 
 ```text
-task.json
-run_config.json
-events.jsonl
-result.json
-screenshots/
-  probe.jpg
-  after_upload.jpg
-  before_actions.jpg
-  action_NNN_before.jpg
-  action_NNN_after.jpg
-  after_actions.jpg
-  natural_end.jpg
+GC001_YYYYMMDD_HHMMSS_microseconds/
+├── task.json
+├── run_config.json
+├── events.jsonl
+├── result.json
+└── screenshots/
+    ├── probe.jpg
+    ├── after_upload.jpg
+    ├── before_actions.jpg
+    ├── action_NNN_before.jpg
+    ├── action_NNN_after.jpg
+    ├── after_actions.jpg
+    └── natural_end.jpg
 ```
 
-The batch CLI also writes `batch_YYYYMMDD_HHMMSS.json`. This preserves task
-execution status, decisions, executed actions, timestamps, errors, screenshots,
-and policy traces without storing API credentials.
+`events.jsonl` is flushed after each event, so partial runs remain diagnosable.
+`result.json` contains task status, planned/resolved actions, Agent decisions,
+timestamps, errors, and screenshot paths. Gemini policy traces include the
+decision prompt, raw response, and latency, but API credentials are never
+written to task or result artifacts. The batch CLI additionally writes
+`batch_YYYYMMDD_HHMMSS.json`.
+
+### Python interface
+
+The same HappyOyster control path can be embedded without the CLI:
+
+```python
+from pathlib import Path
+
+from playworldbench.agent import (
+    AgentHarness,
+    HappyOysterEngine,
+    HarnessConfig,
+    KeepAllPolicy,
+)
+
+task = {
+    "task_id": "GC001",
+    "prompt": "Move forward and turn left to inspect the scene.",
+    "image_path": "gc/images/GC001.jpg",
+    "action_sequence_steps": ["hold(W,1000ms)", "hold(A,750ms)"],
+}
+
+engine = HappyOysterEngine(
+    target_url="https://your-happyoyster-page.example",
+    cdp_url="http://127.0.0.1:9222",
+)
+harness = AgentHarness(
+    engine=engine,
+    policy=KeepAllPolicy(),
+    output_root=Path("runs/happyoyster"),
+    config=HarnessConfig(policy_failure_fallback="stop"),
+)
+result = harness.run_task(task, Path("/absolute/path/to/gc/images/GC001.jpg"))
+print(result["status"], result["run_dir"])
+```
+
+Use `GeminiPolicy(task["prompt"], task_context=task)` in place of
+`KeepAllPolicy()` for visual closed-loop control. `PlayWorldEngine` is also
+exported as the canonical base-class name for implementing another world-model
+page adapter.
 
 ## Gemini video metrics
 
