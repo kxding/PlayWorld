@@ -130,13 +130,18 @@ shell `curl` command. Credentials and headers are not accepted in task JSON,
 prompts, contexts, or output artifacts. `.env` is ignored by Git, and the code
 does not load it automatically.
 
-## Agent Control (HappyOyster example)
+## Agent Control
 
 `PlayWorldEngine` is the public control interface used by PlayWorldBench. It is
 not a fork of the Playwright package: Playwright remains the internal browser
 driver, while `PlayWorldEngine` provides world-model operations such as image
 upload, world generation, observation, keyboard control, recovery, and safe key
 release. `HappyOysterEngine` is the HappyOyster page adapter for that interface.
+
+The following uses HappyOyster as the concrete example. Other cases, including
+HYWorld2, Genie3, and additional world-model systems, follow the same control
+workflow; only the corresponding `PlayWorldEngine` adapter and model-specific
+page selectors or readiness checks need to be supplied.
 
 For every planned benchmark action, the harness takes a screenshot, asks the
 selected Agent policy for a decision, executes the resolved action, takes an
