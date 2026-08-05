@@ -411,6 +411,22 @@ code automatically produces the following measurements and final table:
 | Failure normalization | Preserve the raw quality score for Pass/Partial and replace Fail with 1 where the gate applies; missing videos also contribute 1 | Normalized per-video score |
 | Benchmark aggregation | Split OE into the fixed 30 In-sight and 43 Out-of-sight tasks, then average GC, IF, In-sight, and Out-of-sight with equal group weight | `Gemini score averages · Fail = 1 · OE split` Markdown/JSON table |
 
+All scripts used to compute these metrics are included in this repository:
+
+| Metric component | Script |
+| --- | --- |
+| Per-video score/gate CLI and Gemini request | [`playworldbench/cli/evaluate.py`](playworldbench/cli/evaluate.py) |
+| Primary/detail frame extraction and contact sheets | [`playworldbench/metrics/dual_sampling.py`](playworldbench/metrics/dual_sampling.py) |
+| Automatic 1–5 scoring context, prompt, and schema | [`playworldbench/metrics/gemini_metrics.py`](playworldbench/metrics/gemini_metrics.py) |
+| Trajectory-only instruction gate | [`playworldbench/metrics/instruction_gate.py`](playworldbench/metrics/instruction_gate.py) |
+| Fail=1 normalization and fixed OE split | [`playworldbench/metrics/oe_split_averages.py`](playworldbench/metrics/oe_split_averages.py) |
+| Table aggregation CLI | [`playworldbench/cli/aggregate.py`](playworldbench/cli/aggregate.py) |
+| Metric regression tests | [`tests/test_metrics.py`](tests/test_metrics.py) |
+
+Installing the package registers `playworld-eval` and
+`playworld-aggregate` as the two executable metric commands. The Python files
+above are the complete implementations behind those commands, not placeholders.
+
 Only categories marked applicable in each task record enter its weighted quality
 average. `task_specific`, `applicable=false`, and zero-weight questions are
 excluded. For GC aggregation, `identity_id` has weight 2. The exact group and
