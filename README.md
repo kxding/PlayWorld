@@ -176,6 +176,23 @@ observe screenshot -> Agent decision -> execute/release keys -> record result
           +--------------------- next planned action -------------+
 ```
 
+### PlayWorldEngine execution on a web-based world model
+
+<p align="center">
+  <img src="docs/assets/figure-7/engine_start.jpg" width="32%" alt="Entering the initial-world condition">
+  <img src="docs/assets/figure-7/engine_waiting.jpg" width="32%" alt="Waiting for the world to become interactive">
+  <img src="docs/assets/figure-7/engine_execution_1.jpg" width="32%" alt="Dispatching controls and capturing observations">
+</p>
+<p align="center">
+  <img src="docs/assets/figure-7/engine_execution_2.jpg" width="47%" alt="Continuing the online execution loop">
+  <img src="docs/assets/figure-7/engine_finished.jpg" width="47%" alt="Terminating the episode and preserving outputs">
+</p>
+
+The Engine enters the initial-world condition, waits until the generated world
+becomes interactive, dispatches controls and captures observations for the
+Player's online decisions, and terminates the episode while preserving the
+final video and execution record.
+
 ### 1. Prepare one HappyOyster task
 
 The dataset file is a JSON array. A minimal task record is:
