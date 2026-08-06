@@ -178,6 +178,9 @@ observe screenshot -> Agent decision -> execute/release keys -> record result
 
 ### PlayWorldEngine execution on a web-based world model
 
+<h2 align="center">NO HUMAN OPERATION</h2>
+<h3 align="center">FULLY AUTOMATED EVALUATION</h3>
+
 <p align="center">
   <img src="docs/assets/figure-7/engine_start.jpg" width="32%" alt="Entering the initial-world condition">
   <img src="docs/assets/figure-7/engine_waiting.jpg" width="32%" alt="Waiting for the world to become interactive">
