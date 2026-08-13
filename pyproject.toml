@@ -34,13 +34,15 @@ all-metrics = [
 ]
 
 [project.scripts]
-playworld-eval = "playworldbench.cli.evaluate:main"
+playworld-eval = "metrics.vqa.score:main"
 playworld-aggregate = "playworldbench.cli.aggregate:main"
 playworld-auto-metrics = "playworldbench.cli.automatic:main"
 playworld-agent = "playworldbench.agent_cli:main"
+playworld-player-genie3 = "Agent_player.player_genie3:main"
+playworld-player-happyoyster = "Agent_player.player_happyoyster:main"
 
 [tool.setuptools.packages.find]
-include = ["playworldbench*"]
+include = ["playworldbench*", "metrics*", "Agent_player*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

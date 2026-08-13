@@ -1,0 +1,15 @@
+[
+  {
+    "task_id": "IF017",
+    "category": "IF",
+    "prompt": "The sword-wielding man walks forward.",
+    "image_path": "007.jpg",
+    "image_caption": "An anime-style illustration of a hero resembling Link from The Legend of Zelda standing on a rocky cliff edge, wearing a green tunic and flowing cape, holding a glowing sword, overlooking a vast sea of clouds with mountain peaks emerging, bathed in golden sunrise light.",
+    "perspective": "third person",
+    "action": "w*8",
+    "action_sequence": "hold(W,3600ms)",
+    "action_sequence_steps": [
+      "hold(W,3600ms)"
+    ]
+  }
+]

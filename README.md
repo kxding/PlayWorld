@@ -66,6 +66,13 @@ transport encoding, not the FPS, cell resolution, grid, ordering, or coverage.
 
 ```text
 playworld_code/
+├── Agent_player/
+│   ├── player.py               # template for integrating another model
+│   ├── player_genie3.py        # complete Genie3 player
+│   └── player_happyoyster.py   # complete HappyOyster player
+├── metrics/
+│   └── vqa/                    # inspectable VQA sampling, rubric, gate, API call
+├── run_vqa_score.sh            # root-level one-command VQA entry point
 ├── playworldbench/
 │   ├── agent/
 │   │   ├── base.py              # PlayWorldEngine public browser API
@@ -75,10 +82,7 @@ playworld_code/
 │   │   ├── policies.py          # keep/scripted/Gemini Agent policies
 │   │   └── recording.py
 │   ├── agent_cli.py
-│   ├── metrics/
-│   │   ├── dual_sampling.py
-│   │   ├── gemini_metrics.py
-│   │   ├── instruction_gate.py
+│   ├── metrics/                # compatibility imports + other metric backends
 │   │   ├── memory_metrics.py    # no-GT Geo3D and DSC_ctx
 │   │   ├── vbench_adapter.py    # official VBench custom-input adapter
 │   │   └── oe_split_averages.py
@@ -458,9 +462,10 @@ All scripts used to compute these metrics are included in this repository:
 | Metric component | Script |
 | --- | --- |
 | Per-video score/gate CLI and Gemini request | [`playworldbench/cli/evaluate.py`](playworldbench/cli/evaluate.py) |
-| Primary/detail frame extraction and contact sheets | [`playworldbench/metrics/dual_sampling.py`](playworldbench/metrics/dual_sampling.py) |
-| Automatic 1–5 scoring context, prompt, and schema | [`playworldbench/metrics/gemini_metrics.py`](playworldbench/metrics/gemini_metrics.py) |
-| Trajectory-only instruction gate | [`playworldbench/metrics/instruction_gate.py`](playworldbench/metrics/instruction_gate.py) |
+| Primary/detail frame extraction and contact sheets | [`metrics/vqa/sampling.py`](metrics/vqa/sampling.py) |
+| Automatic 1–5 scoring context, prompt, and schema | [`metrics/vqa/rubric.py`](metrics/vqa/rubric.py) |
+| Trajectory-only instruction gate | [`metrics/vqa/instruction_gate.py`](metrics/vqa/instruction_gate.py) |
+| Gemini evidence assembly, API call, and JSON output | [`metrics/vqa/score.py`](metrics/vqa/score.py) |
 | Fail=1 normalization and fixed OE split | [`playworldbench/metrics/oe_split_averages.py`](playworldbench/metrics/oe_split_averages.py) |
 | Table aggregation CLI | [`playworldbench/cli/aggregate.py`](playworldbench/cli/aggregate.py) |
 | Official VBench custom-input adapter | [`playworldbench/metrics/vbench_adapter.py`](playworldbench/metrics/vbench_adapter.py) |

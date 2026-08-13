@@ -1,0 +1,15 @@
+[
+  {
+    "task_id": "IF032",
+    "category": "IF",
+    "prompt": "The boy runs toward the small dog.",
+    "image_path": "006.jpg",
+    "image_caption": "A small dog runs across the sand towards a young boy standing on the beach.",
+    "perspective": "third person",
+    "action": "w*8",
+    "action_sequence": "hold(W,3600ms)",
+    "action_sequence_steps": [
+      "hold(W,3600ms)"
+    ]
+  }
+]

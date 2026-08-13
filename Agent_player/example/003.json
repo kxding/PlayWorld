@@ -1,0 +1,21 @@
+[
+  {
+    "task_id": "GC005",
+    "category": "GC",
+    "prompt": "Move the camera in a 360-degree orbit around the sculpture, then return to the original camera position and original viewing direction.",
+    "image_path": "003.jpg",
+    "image_caption": "A large green patinated bronze equestrian statue of a rider on horseback sits atop an ornate, multi-tiered dark pedestal in a city square, backed by historic buildings, a church spire, white event tents, street lamps, and pedestrians under a clear blue sky.",
+    "perspective": "first person",
+    "action": "w*4 -> d*5 -> w*6 -> a*10 -> s*6 -> d*5 -> s*4",
+    "action_sequence": "hold(W,1800ms); hold(D,2250ms); hold(W,2700ms); hold(A,4500ms); hold(S,2700ms); hold(D,2250ms); hold(S,1800ms)",
+    "action_sequence_steps": [
+      "hold(W,1800ms)",
+      "hold(D,2250ms)",
+      "hold(W,2700ms)",
+      "hold(A,4500ms)",
+      "hold(S,2700ms)",
+      "hold(D,2250ms)",
+      "hold(S,1800ms)"
+    ]
+  }
+]

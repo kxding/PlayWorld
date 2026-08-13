@@ -1,0 +1,19 @@
+[
+  {
+    "task_id": "GC002",
+    "category": "GC",
+    "prompt": "Move along a rectangular path around the central full-body sculpture with the camera held facing the original direction, then return to the original position.",
+    "image_path": "001.jpg",
+    "image_caption": "A grand museum gallery with an arched glass ceiling showcases rows of classical marble statues and busts arranged symmetrically on dark pedestals against deep red walls.",
+    "perspective": "first person",
+    "action": "d*3 -> w*12 -> a*6 -> s*12 -> d*3",
+    "action_sequence": "hold(D,1350ms); hold(W,5400ms); hold(A,2700ms); hold(S,5400ms); hold(D,1350ms)",
+    "action_sequence_steps": [
+      "hold(D,1350ms)",
+      "hold(W,5400ms)",
+      "hold(A,2700ms)",
+      "hold(S,5400ms)",
+      "hold(D,1350ms)"
+    ]
+  }
+]

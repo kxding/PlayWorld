@@ -1,0 +1,21 @@
+[
+  {
+    "task_id": "GC006",
+    "category": "GC",
+    "prompt": "Move the camera in a 360-degree orbit around the fountain, then return to the original camera position and original viewing direction.",
+    "image_path": "004.jpg",
+    "image_caption": "A large, multi-tiered stone fountain stands in the center of a grassy garden, surrounded by trees, a wooden barrel, and benches, with mountains visible in the distance under a clear blue sky.",
+    "perspective": "first person",
+    "action": "w*1 -> d*3 -> w*6 -> a*6 -> s*6 -> d*3 -> s*3",
+    "action_sequence": "hold(W,450ms); hold(D,1350ms); hold(W,2700ms); hold(A,2700ms); hold(S,2700ms); hold(D,1350ms); hold(S,1350ms)",
+    "action_sequence_steps": [
+      "hold(W,450ms)",
+      "hold(D,1350ms)",
+      "hold(W,2700ms)",
+      "hold(A,2700ms)",
+      "hold(S,2700ms)",
+      "hold(D,1350ms)",
+      "hold(S,1350ms)"
+    ]
+  }
+]

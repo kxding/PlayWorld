@@ -1,0 +1,16 @@
+[
+  {
+    "task_id": "GC004",
+    "category": "GC",
+    "prompt": "Move right 10 steps, then move back to the original position.",
+    "image_path": "002.jpg",
+    "image_caption": "A traditional stone windmill with a round tower, conical shingled roof, large wooden sails, and a smaller rear fantail stands in a green field surrounded by trees under a bright blue sky.",
+    "perspective": "first person",
+    "action": "d*10 -> a*10",
+    "action_sequence": "hold(D,4500ms); hold(A,4500ms)",
+    "action_sequence_steps": [
+      "hold(D,4500ms)",
+      "hold(A,4500ms)"
+    ]
+  }
+]
